@@ -73,6 +73,6 @@
     @apply bg-background text-foreground;
   }
   body::-webkit-scrollbar{
-    display: hidden;
+    display: none;
   }
 }

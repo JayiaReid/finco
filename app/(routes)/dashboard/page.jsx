@@ -1,6 +1,6 @@
 'use client';
 import { UserButton, useUser } from '@clerk/nextjs';
-import { Loader2Icon } from 'lucide-react';
+import { Loader2Icon, MessageCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Card from './_components/Card';
@@ -10,6 +10,9 @@ import { Budgets, Expenses } from '../../../utils/schema';
 import Chart from './_components/Chart'
 import Budget from './budgets/_components/Budget';
 import ExpensesList from './expenses/_components/ExpensesList';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
+import { Button } from '../../../components/ui/button';
+import Link from 'next/link';
 
 const Dashboard = () => {
   const { user } = useUser();
@@ -66,9 +69,22 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className='p-5'>
+      <div className='flex items-center justify-between p-5'>
+        <div className=''>
         <h2 className='mt-5 font-bold text-2xl'>Hi {user?.firstName}!</h2>
         <p>Let's see what happening with your money and manage your expenses</p>
+        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <MessageCircle className='cursor-pointer text-xl' />
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className='flex flex-col gap-3'>
+              <h2>No messages yet</h2>
+              <Button><Link href="/dashboard/messages">See All Messages</Link></Button>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <Card list={budgetListInfo} />

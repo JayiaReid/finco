@@ -28,7 +28,7 @@ const ExpensesList = ({list, refreshData}) => {
             if (result.rowCount === 0) {
                 throw new Error("No expense found with the provided ID");
             }
-            toast("Expense deleted successfully");
+            toast("Expense deleted successfully"); //not working
             refreshData()
         } catch (error) {
             toast("Error deleting expense");

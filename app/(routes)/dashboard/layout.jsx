@@ -35,7 +35,7 @@ const DashboardLayout = ({ children }) => {
                     <div className='fixed bg-primary z-10 w-64 block'>
                         <SideNav showNav={showNav} />
                     </div>
-                    <Dash_Header showNav={showNav} />
+                    {/* <Dash_Header showNav={showNav} /> */}
                     <div className='ml-64 bg-background'>
                         {children}
                     </div>
@@ -46,7 +46,7 @@ const DashboardLayout = ({ children }) => {
                         <SideNavDef showNav={showNav} />
                     </div>
                         <div className='ml-[100px]'>
-                           <Dash_Header showNav={showNav} /> 
+                           {/* <Dash_Header showNav={showNav} />  */}
                         </div>
                         <div className='ml-[100px] bg-background'>
                         {children}

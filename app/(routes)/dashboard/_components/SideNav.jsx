@@ -1,7 +1,7 @@
 'use client';
 
 import { UserButton } from '@clerk/nextjs';
-import { LayoutDashboardIcon, PersonStanding, PiggyBankIcon, ReceiptText, SidebarCloseIcon } from 'lucide-react';
+import { LayoutDashboardIcon, MessageCircleCodeIcon, PersonStanding, PiggyBankIcon, ReceiptText, SidebarCloseIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -32,11 +32,18 @@ const SideNav = ({  showNav }) => {
         },
         {
             id: 4,
+            title: 'Messages',
+            icon: MessageCircleCodeIcon,
+            path: '/dashboard/messages',
+        },
+        {
+            id: 5,
             title: 'Home',
             icon: PersonStanding,
             path: '/',
         },
-    ];
+        
+    ]
 
     return (
         <div onMouseLeave={()=>showNav(false)} className='h-screen text-primary-foreground p-5'>
@@ -56,6 +63,7 @@ const SideNav = ({  showNav }) => {
                     </h2>
                 ))}
             </div>
+            
             <div className='fixed bottom-10 gap-2 flex font-bold p-5 text-primary-foreground items-center'>
                 <UserButton />
                 Profile
