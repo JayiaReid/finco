@@ -20,11 +20,11 @@ const Lpage = () => {
 
                     <div className="mt-8 flex flex-wrap justify-center gap-4">
                     <Link href={'/banking'}>
-                            <Button className='bg-secondary text-secondary-foreground outline outline-primary'>Banking</Button>
+                            <Button variant='outline' className='outline bg-transparent outline-1'>Banking</Button>
                         </Link>
 
                         <Link href={'/dashboard'}>
-                            <Button className='hover:bg-secondary hover:outline hover:outline-primary hover:text-secondary-foreground'>Manage Expenses and Budgets</Button>
+                            <Button variant='outline' className='outline bg-transparent outline-1'>Manage Expenses and Budgets</Button>
                         </Link>
                     </div>
                 </div>
