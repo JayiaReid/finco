@@ -41,8 +41,6 @@ const BudgetList = () => {
   return (
     <div className="mt-7">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 m-4">
-        <CreateBudget refreshData={()=>getBudgets()} />
-
         {budgetList.map((budget, index)=>(
           <Budget refreshData={()=>getBudgets()} item={budget}/>
         ))}

@@ -77,14 +77,14 @@ const ExpensesPage = () => {
         const result = await db.delete(Budgets).where(eq(Budgets.id, id))
         
         if (result.rowCount === 0 ) {
-            throw new Error("No expense found with the provided ID");
+            throw new Error("No budget found with the provided ID");
         }
         toast({
           title: "Budget deleted successfully"
         });
         router.push('/dashboard/budgets'); 
     } catch (error) {
-        toast({ title: "Error deleting expense"});
+        toast({ title: "Error deleting budget"});
         throw error;
     }
 
@@ -94,7 +94,7 @@ const ExpensesPage = () => {
   return (
     <div className='p-10'>
       <h2 onClick={()=>router.push('/dashboard/budgets')} className='m-2 cursor-pointer items-end justify-end font-semibold flex gap-2'><ArrowLeftToLine/> Go Back to Budgets</h2>
-      <div className='flex justify-betweenCM  items-center'>
+      <div className='flex justify-between items-center'>
         <h2 className='text-2xl font-bold w-full'>My Expenses</h2>
         <div className='flex place-items-end w-full justify-end m-2 '>
           <AlertDialog>

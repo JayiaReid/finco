@@ -23,9 +23,9 @@ const SideNavDef = ({showNav}) => {
         },
         {
             id: 3,
-            title: 'Expenses',
+            title: 'Plan',
             icon: ReceiptText,
-            path: '/dashboard/expenses',
+            path: '/dashboard/plans',
         },
         {
             id: 4,

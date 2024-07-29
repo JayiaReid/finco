@@ -15,3 +15,21 @@ export const Expenses=pgTable('expenses', {
     budgetId:varchar('budgetId').references(()=>Budgets.id),
     createdBy:varchar('createdBy').notNull()
 })
+
+export const Plans=pgTable('plans',{
+    id:varchar('id').primaryKey(),
+    name:varchar('name').notNull(),
+    icon:varchar('icon'),
+    notes:varchar('notes'),
+    createdBy:varchar('createdBy').notNull()
+})
+
+export const PlanItems = pgTable('planItems',{
+    id:varchar('id').primaryKey(),
+    name:varchar('name').notNull(),
+    notes:varchar('notes'),
+    price:varchar('price'),
+    keyword:varchar('keyword'),
+    createdBy:varchar('createdBy').notNull(),
+    planId:varchar('planId').references(()=>Plans.id)
+})
