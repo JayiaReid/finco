@@ -10,7 +10,7 @@ const Budget = ({ refreshData, item }) => {
 
     const percent = Math.round((item?.totalSpend / item?.amount) * 100);
     const maxpercent = Math.min(percent, 100);
-    const progressBarColor = percent > 100 ? 'bg-destructive' : 'bg-primary';
+    const progressBarColor = percent > 100 ? 'bg-destructive' : 'bg-primary'
 
     
     return (

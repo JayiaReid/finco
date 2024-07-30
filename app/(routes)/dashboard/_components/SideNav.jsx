@@ -56,7 +56,7 @@ const SideNav = ({  showNav }) => {
                         className={`flex p-5 cursor-pointer mt-5 hover:bg-accent hover:text-accent-foreground rounded-md gap-2 items-center text-primary-foreground ${
                             param === item.path && 'text-secondary-foreground bg-accent'
                         }`}
-                        onClick={() => router.push(item.path)}
+                        onClick={() => {router.push(item.path); showNav(false)}}
                     >
                         <item.icon />
                         {item.title}

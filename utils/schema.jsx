@@ -29,6 +29,7 @@ export const PlanItems = pgTable('planItems',{
     name:varchar('name').notNull(),
     notes:varchar('notes'),
     price:varchar('price'),
+    color:varchar('color'),
     keyword:varchar('keyword'),
     createdBy:varchar('createdBy').notNull(),
     planId:varchar('planId').references(()=>Plans.id)

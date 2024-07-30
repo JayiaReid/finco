@@ -23,7 +23,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (user) {
       getBudgets();
-      
     }
   }, [user]);
 

@@ -66,7 +66,7 @@ const CreateBudget = ({refreshData}) => {
                         <DialogTitle>Create New Budget</DialogTitle>
                         <DialogDescription>
                             <Button size='lg' variant="outline" onClick={() => setopenEmojiPicker(!openEmojiPicker)} className='my-5'>{emoji}</Button>
-                            {openEmojiPicker ? <div className='absolute'><EmojiPicker onEmojiClick={(e) => { setEmoji(e.emoji); setopenEmojiPicker(false) }} theme='dark' style={{ background: "#020817" }} /></div> : <div></div>}
+                            {openEmojiPicker ? <div className='absolute'><EmojiPicker onEmojiClick={(e) => { setEmoji(e.emoji); setopenEmojiPicker(false) }} /></div> : <div></div>}
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Budget Name</h2>
                                 <Input onChange={(e) => setBudgetName(e.target.value)} placeholder="eg. Dorm Room" />

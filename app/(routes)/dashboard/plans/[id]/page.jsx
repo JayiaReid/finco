@@ -39,12 +39,9 @@ const Page = () => {
   const { user } = useUser();
   const [info, setInfo] = useState({});
   const router = useRouter();
+  const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
-  const [name, setName] = useState('');
-  const [keyword, setKeyword] = useState('');
-  const [price, setPrice] = useState('');
-  const [notes, setNotes] = useState('');
-  const [add, setAdd] = useState(false);
+
 
   useEffect(() => {
     if (user) {
@@ -125,8 +122,6 @@ const Page = () => {
       <Plan item={info} display={true} />
 
       <ItemsTable refreshData={getPlanInfo}/>
-
-      next- sidenav at bottom on small screens allow for adding expenses from plans, keywords select with color
     </div>
   );
 };

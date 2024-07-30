@@ -1,9 +1,13 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import BudgetList from './_components/List'
 import CreateBudget from './_components/CreateBudget'
+import { useUser } from '@clerk/nextjs'
 
 const Budgets = () => {
+
+  const {user} = useUser()
+  const [budgetList, setBudgetList]=useState([])
 
   const getBudgets = async () => {
     if (!user) return;
