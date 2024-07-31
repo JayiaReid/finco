@@ -1,5 +1,5 @@
 "use client"
-import { PlusIcon } from 'lucide-react'
+import { Pencil, PlusIcon } from 'lucide-react'
 import React, { useState } from 'react'
 import {
     Dialog,
@@ -19,38 +19,57 @@ import { Budgets } from '../../../../../utils/schema'
 import { db } from '../../../../../utils/dbConfig'
 import { toast } from '../../../../../components/ui/use-toast'
 import { title } from 'process'
+import { eq } from 'drizzle-orm'
 
 
-const CreateBudget = ({refreshData}) => {
+const CreateBudget = ({ edit, exisitingData, refreshData }) => {
     const [emoji, setEmoji] = useState('$$')
     const [openEmojiPicker, setopenEmojiPicker] = useState(false)
     const [budgetName, setBudgetName] = useState()
     const [amount, setAmount] = useState()
     const { user } = useUser()
 
+    const editBudget = () => {
+        setBudgetName(exisitingData?.name)
+        setAmount(exisitingData?.amount)
+    }
+
     const CreateBudget = async () => {
-        const result = await db.insert(Budgets).values({
-            id: Date.now(),
-            name: budgetName,
-            amount: amount,
-            icon: emoji,
-            createdBy: user.id
-        })
 
-        console.log(result)
+        if (exisitingData) {
 
-        if (result) {
-            refreshData()
-            toast({
-                title: "New Budget Created!"
+            const res = await db.delete(Budgets).where(eq(Budgets.id, exisitingData?.id));
+
+            const result = await db.insert(Budgets).values({
+                id: exisitingData?.id,
+                name: budgetName,
+                amount: amount,
+                icon: emoji,
+                createdBy: user.id
             })
+
+            console.log('edited')
         } else {
-            toast({
-                title: "Uh oh! Something went wrong.",
-                description: "There was a problem with your request.",
+            const result = await db.insert(Budgets).values({
+                id: Date.now(),
+                name: budgetName,
+                amount: amount,
+                icon: emoji,
+                createdBy: user.id
             })
+            console.log(result)
+            if (result) {
+                refreshData()
+                toast({
+                    title: "New Budget Created!"
+                })
+            } else {
+                toast({
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                })
+            }
         }
-
 
     }
 
@@ -59,7 +78,7 @@ const CreateBudget = ({refreshData}) => {
 
             <Dialog>
                 <DialogTrigger><div className=''>
-                    <PlusIcon className='text-3xl' />
+                    {edit ? <Pencil className='text-3xl' onClick={() => editBudget()} /> : <PlusIcon className='text-3xl' />}
                 </div></DialogTrigger>
                 <DialogContent className='m-2'>
                     <DialogHeader>
@@ -69,17 +88,17 @@ const CreateBudget = ({refreshData}) => {
                             {openEmojiPicker ? <div className='absolute'><EmojiPicker onEmojiClick={(e) => { setEmoji(e.emoji); setopenEmojiPicker(false) }} /></div> : <div></div>}
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Budget Name</h2>
-                                <Input onChange={(e) => setBudgetName(e.target.value)} placeholder="eg. Dorm Room" />
+                                <Input value={budgetName} onChange={(e) => setBudgetName(e.target.value)} placeholder="eg. Dorm Room" />
                             </div>
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Budget Amount</h2>
-                                <Input type='number' onChange={(e) => setAmount(e.target.value)} placeholder="eg. 5000" />
+                                <Input value={amount} type='number' onChange={(e) => setAmount(e.target.value)} placeholder="eg. 5000" />
                             </div>
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="sm:justify-start">
                         <DialogClose asChild>
-                        <Button onClick={CreateBudget} disabled={!(budgetName && amount)} className='my-5'>Create Budget</Button>
+                            <Button onClick={CreateBudget} disabled={!(budgetName && amount)} className='my-5'>Create Budget</Button>
                         </DialogClose>
                     </DialogFooter>
                 </DialogContent>

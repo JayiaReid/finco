@@ -23,6 +23,7 @@ import {
 import { Button } from "../../../../../components/ui/button"
 import { toast } from '../../../../../components/ui/use-toast';
 import { ArrowLeftToLine, Trash } from 'lucide-react';
+import CreateBudget from '../../budgets/_components/CreateBudget';
 
 const ExpensesPage = () => {
   const { id } = useParams();
@@ -37,6 +38,28 @@ const ExpensesPage = () => {
       getBudgetInfo();
     }
   }, [user]);
+
+  const getBudgets = async () => {
+    if (!user) return;
+
+    try {
+      const result = await db.select({
+        ...getTableColumns(Budgets),
+        totalSpend: sql`sum(CAST(${Expenses.amount} AS NUMERIC))`.mapWith(Number),
+        totalItems: sql`count(${Expenses.id})`.mapWith(Number),
+      })
+      .from(Budgets)
+      .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
+      .where(eq(Budgets.createdBy, user.id))
+      .groupBy(Budgets.id);
+
+      setBudgetList(result)
+      console.log(budgetList);
+    } catch (error) {
+      console.error('Error fetching budgets:', error);
+    }
+  };
+
 
   const getBudgetInfo = async () => {
     try {
@@ -115,6 +138,7 @@ const ExpensesPage = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+          <CreateBudget exisitingData={BudgetInfo} refreshData={getBudgets} edit={true} />
         </div>
       </div>
 

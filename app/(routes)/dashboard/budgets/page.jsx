@@ -32,7 +32,7 @@ const Budgets = () => {
 
   return (
     <div className='p-10'>
-      <h2 className='p-5 font-bold text-3xl flex gap-5 items-center'>My Budgets <CreateBudget refreshData={()=>getBudgets()} /></h2>
+      <h2 className='p-5 font-bold text-3xl flex gap-5 items-center'>My Budgets <CreateBudget edit={false} exisitingData={null} refreshData={()=>getBudgets()} /></h2>
       <BudgetList/>
     </div>
   )

@@ -6,7 +6,7 @@ import { desc, eq, getTableColumns, sql } from 'drizzle-orm';
 import { Keywords, PlanItems, Plans } from '../../../../../utils/schema';
 import { useUser } from '@clerk/nextjs';
 import { db } from '../../../../../utils/dbConfig';
-import { ArrowLeftToLine, ChevronDown, Trash } from 'lucide-react';
+import { ArrowLeftToLine, ChevronDown, Pencil, Trash } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -50,6 +50,7 @@ const ItemsTable = ({ refreshData }) => {
   const [add2, setadd2] = useState(false)
   const [color, setColor] = useState('')
   const [keywordList, setkeywordList] = useState([])
+  const [existingId, setId] = useState(null)
 
   useEffect(() => {
     if (user) {
@@ -71,8 +72,22 @@ const ItemsTable = ({ refreshData }) => {
     }
   };
 
+  const editItem = (id, name, keyword, notes, price, color) =>{
+
+    setAdd(true)
+    setId(id)
+    setName(name)
+    setKeyword(keyword)
+    setNotes(notes)
+    setPrice(price)
+    setColor(color)
+  }
+
   const addItem = async () => {
     try {
+
+      const result = await db.delete(PlanItems).where(eq(PlanItems.id, existingId));
+
       await db.insert(PlanItems).values({
         name,
         keyword,
@@ -135,19 +150,19 @@ const ItemsTable = ({ refreshData }) => {
               <TableCell>{item?.price}</TableCell>
               <TableCell>{item?.notes}</TableCell>
               <TableCell>{item?.keyword}</TableCell>
-              <TableCell className='text-right text-destructive'><Trash className='cursor-pointer' onClick={() => deleteItem(item?.id)} /></TableCell>
+              <TableCell className='text-right '><div className='cursor-pointer flex gap-2'><Trash className='text-destructive cursor-pointer' onClick={() => deleteItem(item?.id)} /><Pencil onClick={()=>editItem(item?.id, item?.name, item?.keyword, item?.notes, item?.price, item?.color)}/></div></TableCell>
             </TableRow>
           ))}
           {add ? (
             <TableRow>
               <TableCell className="font-medium border">
-                <Input placeHolder='Enter Name (required)' className='border-none shadow-none p-2 rounded-none focus-visible:outline-none' onChange={(e) => setName(e.target.value)} />
+                <Input value={name} placeHolder='Enter Name (required)' className='border-none shadow-none p-2 rounded-none focus-visible:outline-none' onChange={(e) => setName(e.target.value)} />
               </TableCell>
               <TableCell className='border'>
-                <Input placeHolder='Enter Price' type='number' className='border-none shadow-none p-2 rounded-none focus-visible:outline-none' onChange={(e) => setPrice(Number(e.target.value))} />
+                <Input value={price} placeHolder='Enter Price' type='number' className='border-none shadow-none p-2 rounded-none focus-visible:outline-none' onChange={(e) => setPrice(Number(e.target.value))} />
               </TableCell>
               <TableCell className='border'>
-                <Textarea placeHolder='Add Notes' className='border-none shadow-none p-2 rounded-none focus-visible:outline-none' onChange={(e) => setNotes(e.target.value)} />
+                <Textarea value={notes} placeHolder='Add Notes' className='border-none shadow-none p-2 rounded-none focus-visible:outline-none' onChange={(e) => setNotes(e.target.value)} />
               </TableCell>
               <TableCell className='border'>
                 <DropdownMenu>
@@ -168,7 +183,7 @@ const ItemsTable = ({ refreshData }) => {
               </TableCell>
               <TableCell className='border-none flex items-center justify-center gap-2 text-right'>
                 <Button variant='outline' onClick={() => setAdd(false)}>Cancel</Button>
-                <Button disabled={!(name)} onClick={addItem}>Save</Button>
+                <Button disabled={!(name)} onClick={()=>addItem()}>Save</Button>
               </TableCell>
             </TableRow>
           ) : (
