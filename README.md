@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Project Title
+Finco offers a range of key features designed to enhance financial management and planning. Users can easily create and manage budgets, i.e, categorize expenses, and monitor their spending habits with budget creation and expense tracking tools. The app includes a user-friendly overview dashboard that provides a comprehensive view of all financial activities, helping users stay on top of their finances. Additionally, Finco allows users to create detailed plans for potential expenses, complete with the ability to make notes. With tools and features that facilitate seamless financial planning, Finco makes it easier for users to achieve their financial goals.
 
-## Getting Started
+## Demo
 
-First, run the development server:
+Insert gif or link to demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+https://finco-three.vercel.app/dashboard
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Documentation
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+[Documentation](https://docs.google.com/document/d/1jCjrSB1qod3-rfGY8TzpDYbQ5PbVTN7Wc6KF3m19k-M/edit)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Tech Stack
+Client: NextJs, TailwindCss, ShadCN UI, Lucide Icons
 
-## Learn More
+Server: Clerk Auth, Neon Postgresql, Drizzle ORM
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Color Reference
+| Color             | Hex                                                                |
+| ----------------- | ------------------------------------------------------------------ |
+| Primary Color | ![#121725](https://via.placeholder.com/10/121725?text=+) #121725 |
+| Secondary Color | ![#FFFFFF](https://via.placeholder.com/10/FFFFFF?text=+) #FFFFFF |
+| Accent Color | ![#F2F5F8](https://via.placeholder.com/10/F2F5F8?text=+) #F2F5F8 |
