@@ -72,7 +72,7 @@ const ItemsTable = ({ refreshData }) => {
     }
   };
 
-  const editItem = (id, name, keyword, notes, price, color) =>{
+  const editItem = (id, name, keyword, notes, price, color) => {
 
     setAdd(true)
     setId(id)
@@ -103,6 +103,12 @@ const ItemsTable = ({ refreshData }) => {
       });
       getPlans();
       setAdd(false);
+      setId(null)
+      setName(null)
+      setKeyword(null)
+      setNotes(null)
+      setPrice(null)
+      setColor(null)
     } catch (error) {
       toast({ title: "Error adding item" });
       console.error('Error adding item:', error);
@@ -150,7 +156,7 @@ const ItemsTable = ({ refreshData }) => {
               <TableCell>{item?.price}</TableCell>
               <TableCell>{item?.notes}</TableCell>
               <TableCell>{item?.keyword}</TableCell>
-              <TableCell className='text-right '><div className='cursor-pointer flex gap-2'><Trash className='text-destructive cursor-pointer' onClick={() => deleteItem(item?.id)} /><Pencil onClick={()=>editItem(item?.id, item?.name, item?.keyword, item?.notes, item?.price, item?.color)}/></div></TableCell>
+              <TableCell className='text-right '><div className='cursor-pointer flex gap-2'><Trash className='text-destructive cursor-pointer' onClick={() => deleteItem(item?.id)} /><Pencil onClick={() => editItem(item?.id, item?.name, item?.keyword, item?.notes, item?.price, item?.color)} /></div></TableCell>
             </TableRow>
           ))}
           {add ? (
@@ -173,17 +179,17 @@ const ItemsTable = ({ refreshData }) => {
                     <DropdownMenuLabel>Select Buying Status </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuRadioGroup className='p-2  flex flex-col gap-2' value={keyword} onValueChange={setKeyword}>
-                      <DropdownMenuRadioItem onClick={()=>setColor('orange')} value="Low Priority"> <div className='flex gap-3 items-center'><div className='p-2 bg-orange-300 rounded-full'></div> <p>Low Priority</p></div></DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem onClick={()=>setColor('green')} value="Important"><div className='flex gap-3 items-center'><div className='p-2 bg-green-300 rounded-full'></div> <p>Important</p></div></DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem onClick={()=>setColor('yellow')} value="Is a Maybe"><div className='flex gap-3 items-center'><div className='p-2 bg-yellow-300 rounded-full'></div><p>Is a Maybe</p></div></DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem onClick={()=>setColor('blue')} value="Status Unclear"> <div className='flex gap-3 items-center'><div className='p-2 bg-blue-300 rounded-full'></div> <p>Priority Unclear</p></div></DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem onClick={() => setColor('orange')} value="Low Priority"> <div className='flex gap-3 items-center'><div className='p-2 bg-orange-300 rounded-full'></div> <p>Low Priority</p></div></DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem onClick={() => setColor('green')} value="Important"><div className='flex gap-3 items-center'><div className='p-2 bg-green-300 rounded-full'></div> <p>Important</p></div></DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem onClick={() => setColor('yellow')} value="Is a Maybe"><div className='flex gap-3 items-center'><div className='p-2 bg-yellow-300 rounded-full'></div><p>Is a Maybe</p></div></DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem onClick={() => setColor('blue')} value="Status Unclear"> <div className='flex gap-3 items-center'><div className='p-2 bg-blue-300 rounded-full'></div> <p>Priority Unclear</p></div></DropdownMenuRadioItem>
                     </DropdownMenuRadioGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
               <TableCell className='border-none flex items-center justify-center gap-2 text-right'>
                 <Button variant='outline' onClick={() => setAdd(false)}>Cancel</Button>
-                <Button disabled={!(name)} onClick={()=>addItem()}>Save</Button>
+                <Button disabled={!(name)} onClick={() => addItem()}>Save</Button>
               </TableCell>
             </TableRow>
           ) : (
