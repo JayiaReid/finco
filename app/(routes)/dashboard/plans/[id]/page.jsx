@@ -127,3 +127,5 @@ const Page = () => {
 };
 
 export default Page;
+
+// price comparisons?

@@ -30,7 +30,15 @@ const Dashboard = () => {
     if(!user) return;
 
     try{
-      const result = await db.select().from(Expenses).where(eq(Expenses.createdBy, user.id)).orderBy(desc(Expenses.id))
+      const result = await db.select({
+        ...getTableColumns(Expenses),
+        icon: Budgets.icon,
+      })
+      .from(Expenses)
+      .leftJoin(Budgets, eq(Budgets.id, Expenses.budgetId))  // Use Budgets table directly in leftJoin
+      .where(eq(Expenses.createdBy, user.id))
+      .orderBy(desc(Expenses.id))
+
       console.log(result)
       setExpenses(result)
     }catch (error) {
@@ -91,7 +99,7 @@ const Dashboard = () => {
         <div className='md:col-span-2'>
           <Chart list={budgetListInfo}/>
           <h2 className='font-bold text-xl mt-3'>Latest Expenses</h2>
-          <ExpensesList list={expenses} refreshData={getBudgets}/>
+          <ExpensesList icon={true} list={expenses} refreshData={getBudgets}/>
         </div>
         <div className='grid gap-5'>
           <h2 className='font-bold text-xl'>Latest Budgets</h2>

@@ -124,7 +124,7 @@ const ExpensesPage = () => {
       </div>
       <div className='mt-4'>
         <h2 className='font-bold text-lg'>Lastest Expenses</h2>
-        <ExpensesList refreshData={getBudgetInfo} list={list} />
+        <ExpensesList icon={false} refreshData={getBudgetInfo} list={list} />
       </div>
     </div>
   );
