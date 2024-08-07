@@ -11,7 +11,7 @@ import { Budgets } from '../../../utils/schema';
 import { useRouter } from 'next/navigation';
 import SideNavDef from './_components/SideNavDef'
 const DashboardLayout = ({ children }) => {
-    const [nav, showNav] = useState(false);
+    const [nav, showNav] = useState(true);
 
     const { user } = useUser();
     const router = useRouter()
