@@ -76,6 +76,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      {/* Add something to set money or this will be automatic */}
       <div className='flex items-center justify-between p-5'>
         <div className=''>
         <h2 className='mt-5 font-bold text-2xl'>Hi {user?.firstName}!</h2>

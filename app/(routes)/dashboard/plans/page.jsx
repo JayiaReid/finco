@@ -29,12 +29,12 @@ const plansPage = () => {
     try {
       const result = await db.select({
         ...getTableColumns(Plans),
-        count: sql `count(${PlanItems.id})`.mapWith(Number)
+        count: sql`count(${PlanItems.id})`.mapWith(Number)
       }).from(Plans)
-      .where(eq(Plans.createdBy, user.id))
-      .leftJoin(PlanItems, eq(Plans.id, PlanItems.planId))
-      .groupBy(Plans.id)
-      .orderBy(desc(Plans.id))
+        .where(eq(Plans.createdBy, user.id))
+        .leftJoin(PlanItems, eq(Plans.id, PlanItems.planId))
+        .groupBy(Plans.id)
+        .orderBy(desc(Plans.id))
       console.log(result)
       setPlanList(result)
       console.log(planlist);
@@ -48,28 +48,32 @@ const plansPage = () => {
   return (
     <div className='p-10'>
       <div className='flex items-center justify-between'>
-        <h2 className='text-3xl p-5 font-bold flex gap-5'>My Plans <CreatePlan refreshData={getPlans} /></h2>
-        <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Info/>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Create Plans aka wishlists where u can add items and include notes and prices</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-        
-      </div>
-      
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 m-4'>
-      
+        <h2 className='text-3xl p-5 font-bold flex gap-5'>My Plans</h2>
+        <div className='flex gap-3 items-center'>
+          <CreatePlan refreshData={getPlans} />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info />
+              </TooltipTrigger>
+              <TooltipContent className='bg-accent text-accent-foreground'>
+                <h2 >Create Plans aka wishlists where u can add items and include notes and prices</h2>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
 
-      {planlist.map((item, index)=>(
-        <Plan item={item} />
-      ))}
+
       </div>
-      
+
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 m-4'>
+
+
+        {planlist.map((item, index) => (
+          <Plan item={item} />
+        ))}
+      </div>
+
     </div>
   )
 }

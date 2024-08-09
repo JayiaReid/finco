@@ -1,4 +1,4 @@
-import { integer, PgNumeric, pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, PgNumeric, pgTable, serial, varchar } from "drizzle-orm/pg-core";
 
 export const Budgets=pgTable('budgets',{
     id:varchar('id').primaryKey(),
@@ -33,4 +33,28 @@ export const PlanItems = pgTable('planItems',{
     keyword:varchar('keyword'),
     createdBy:varchar('createdBy').notNull(),
     planId:varchar('planId').references(()=>Plans.id)
+})
+
+
+export const UserStats = pgTable('userStats',{
+    id:varchar('id').primaryKey(),
+    income:varchar('income').notNull(),
+    budgeted:varchar('budgeted'),
+    saved:varchar('saved'),
+    invested:varchar('invested'),
+    total:varchar('total'),
+    userid:varchar('userid').notNull(),
+    billed:varchar('billed')
+})
+
+export const Bills = pgTable('bills',{
+    id:varchar('id').primaryKey(),
+    name:varchar('name').notNull(),
+    charge:varchar('charge').notNull(),
+    consistency:boolean('consistency').notNull(),
+    repeats:boolean('repeats').notNull(),
+    date:varchar('date').notNull(),
+    createdBy:varchar('createdBy').notNull(),
+    paid:boolean('paid'),
+    icon:varchar('icon')
 })

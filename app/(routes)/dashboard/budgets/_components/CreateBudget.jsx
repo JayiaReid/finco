@@ -78,7 +78,7 @@ const CreateBudget = ({ edit, exisitingData, refreshData }) => {
 
             <Dialog>
                 <DialogTrigger><div className=''>
-                    {edit ? <Pencil className='text-3xl' onClick={() => editBudget()} /> : <PlusIcon className='text-3xl' />}
+                    {edit ? <Pencil className='text-3xl' onClick={() => editBudget()} /> : <Button>Add New Budget +</Button>}
                 </div></DialogTrigger>
                 <DialogContent className='m-2'>
                     <DialogHeader>

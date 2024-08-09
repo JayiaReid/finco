@@ -1,6 +1,6 @@
 'use client';
 import { UserButton } from '@clerk/nextjs';
-import { LayoutDashboardIcon, MessageCircleCodeIcon, PersonStanding, PiggyBankIcon, ReceiptText, SidebarCloseIcon } from 'lucide-react';
+import { Landmark, LayoutDashboardIcon, MessageCircleCodeIcon, PersonStanding, PiggyBankIcon, Receipt, ReceiptText, SidebarCloseIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -28,11 +28,24 @@ const SideNavDef = ({showNav}) => {
             path: '/dashboard/plans',
         },
         {
-            id: 4,
-            title: 'Messages',
-            icon: MessageCircleCodeIcon,
-            path: '/dashboard/messages',
+            id: 7,
+            title: 'Bills',
+            icon: Receipt,
+            path: '/dashboard/bills',
         },
+        {
+            id: 4,
+            title: 'Savings',
+            icon: PiggyBankIcon,
+            path: '/dashboard/savings',
+        },
+        {
+            id: 6,
+            title: 'Investments',
+            icon: Landmark,
+            path: '/dashboard/investments',
+        },
+        
         {
             id: 5,
             title: 'Home',
@@ -42,7 +55,7 @@ const SideNavDef = ({showNav}) => {
     ];
 
     return (
-        <div onMouseOver={()=>showNav(true)} className='h-screen w-auto text-primary-foreground p-5'>
+        <div onMouseOver={()=>showNav(true)} className=' h-screen w-auto text-primary-foreground p-5'>
             {/* <SidebarCloseIcon className='ml-40 cursor-pointer my-4' onClick={() => showNav(false)} /> */}
             <Image src='/budget.png' alt='Budget' width={50} height={50} />
             <div>
