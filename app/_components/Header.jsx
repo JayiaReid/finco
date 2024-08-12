@@ -16,7 +16,7 @@ const Header = () => {
           <UserButton/>:
           <div className='flex gap-2'>
           <Link href={'/sign-in'}>
-            <Button className='bg-secondary text-secondary-foreground'>Log In</Button>
+            <Button className='bg-secondary text-secondary-foreground hover:text-primary-foreground'>Log In</Button>
           </Link>
           <Link href={'/sign-up'}>
             <Button>Sign Up</Button>

@@ -56,5 +56,6 @@ export const Bills = pgTable('bills',{
     date:varchar('date').notNull(),
     createdBy:varchar('createdBy').notNull(),
     paid:boolean('paid'),
-    icon:varchar('icon')
+    icon:varchar('icon'),
+    continued:boolean('continued')
 })

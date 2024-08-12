@@ -26,10 +26,10 @@ const CreateBill = ({ refreshData }) => {
     const {user} = useUser()
 
     const addBill = async () =>{
-        if (type=='Repeats and Charge is Consistent'){
+        if (type==='Repeats and Charge is Consistent'){
             setrepeats(true)
             setcons(true)
-        }else if(type=='Repeats but charge varies'){
+        }else if(type==='Repeats but charge varies'){
             setrepeats(true)
         }
 
