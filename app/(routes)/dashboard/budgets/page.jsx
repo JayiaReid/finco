@@ -1,14 +1,20 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import BudgetList from './_components/List'
 import CreateBudget from './_components/CreateBudget'
 import { useUser } from '@clerk/nextjs'
 import { Info } from 'lucide-react'
+import BudgetDashboard from './_components/budgetDashboard'
+import Budget from './_components/Budget'
+import { db } from '../../../../utils/dbConfig'
+import { eq, getTableColumns, sql } from 'drizzle-orm'
+import { Expenses, Budgets } from '../../../../utils/schema'
 
-const Budgets = () => {
+const BudgetsPage = () => {
 
   const {user} = useUser()
   const [budgetList, setBudgetList]=useState([])
+  const [retiredBudgets, setRetiredBudgets]=useState([])
 
   const getBudgets = async () => {
     if (!user) return;
@@ -23,13 +29,18 @@ const Budgets = () => {
       .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
       .where(eq(Budgets.createdBy, user.id))
       .groupBy(Budgets.id);
-
-      setBudgetList(result)
-      console.log(budgetList);
+      
+      const filtered = result.filter(budget => budget.retired == true)
+      setRetiredBudgets(filtered)
+      console.log(filtered);
     } catch (error) {
       console.error('Error fetching budgets:', error);
     }
   };
+
+  useEffect(()=>{
+    getBudgets()
+  },[user])
 
   return (
     <div className='p-10'>
@@ -41,9 +52,17 @@ const Budgets = () => {
         </div>
       </div>
       
-      <BudgetList/>
+      {/* <BudgetList/> */}
+      <BudgetDashboard/>
+      <h2 className='font-bold my-4 text-2xl'>Retired Budgets</h2>
+      <div className='grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 '>
+        {retiredBudgets.map((budget, index)=>(
+        <Budget key={index} item={budget} />
+      ))}
+      </div>
+      
     </div>
   )
 }
 
-export default Budgets
+export default BudgetsPage

@@ -8,54 +8,46 @@ import { ChevronDown } from 'lucide-react'
 import { db } from '../../../../../utils/dbConfig'
 import { Bills } from '../../../../../utils/schema'
 import { useUser } from '@clerk/nextjs'
-import { Toast } from '../../../../../components/ui/toast'
 import EmojiPicker from 'emoji-picker-react'
 
-
-
 const CreateBill = ({ refreshData }) => {
+    const [name, setName] = useState('')
+    const [charge, setCharge] = useState('')
+    const [type, setType] = useState('Select a type')
+    const [date, setDate] = useState('')
+    const [icon, setIcon] = useState('$$')
+    const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
+    const { user } = useUser()
 
-    const [name, setName]=useState()
-    const [charge, setCharge]=useState()
-    const [type,setType] =useState('Select a type')
-    const [date, setDate]=useState()
-    const [repeats, setrepeats]=useState(false)
-    const [consistency,setcons]=useState(false)
-    const [icon,setIcon]=useState('$$')
-    const [openEmojiPicker, setopenEmojiPicker] = useState(false)
-    const {user} = useUser()
+    const addBill = async () => {
+        const repeats = type !== 'Does Not Repeat'
+        const consistency = type === 'Repeats and Charge is Consistent'
 
-    const addBill = async () =>{
-        if (type==='Repeats and Charge is Consistent'){
-            setrepeats(true)
-            setcons(true)
-        }else if(type==='Repeats but charge varies'){
-            setrepeats(true)
-        }
-
-        try{
-            const result= await db.insert(Bills).values({
-                id:Date.now(),
+        try {
+            const result = await db.insert(Bills).values({
+                id: Date.now(),
                 name,
-                charge,
+                charge: parseFloat(charge),
                 date,
                 repeats,
                 consistency,
-                createdBy:user.id,
-                paid:false,
+                createdBy: user.id,
+                paid: false,
                 icon
             })
 
-            if (result) {console.log('Bill saved Sucessfully')};
-        }catch (error){
+            if (result) {
+                Toast({title: 'Added Sucessfully'})
+            }
+        } catch (error) {
             console.log(error)
         }
 
-        setName(null)
-        setCharge(null)
-        setDate(null)
+        setName('')
+        setCharge('')
+        setDate('')
         setIcon('$$')
-        setType('select a type')
+        setType('Select a type')
 
         refreshData()
     }
@@ -70,25 +62,25 @@ const CreateBill = ({ refreshData }) => {
                     <DialogHeader>
                         <DialogTitle>Add a new bill</DialogTitle>
                         <DialogDescription>
-                        <Button size='lg' variant="outline" onClick={() => setopenEmojiPicker(!openEmojiPicker)} className='mt-4 mb-2'>{icon}</Button>
-                        {openEmojiPicker ? <div className='absolute'><EmojiPicker onEmojiClick={(e) => { setIcon(e.emoji); setopenEmojiPicker(false) }} theme='dark' style={{ background: "#020817" }} /></div> : <div></div>}
+                            <Button size='lg' variant="outline" onClick={() => setOpenEmojiPicker(!openEmojiPicker)} className='mt-4 mb-2'>{icon}</Button>
+                            {openEmojiPicker ? <div className='absolute'><EmojiPicker onEmojiClick={(e) => { setIcon(e.emoji); setOpenEmojiPicker(false) }} theme='dark' style={{ background: "#020817" }} /></div> : null}
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Bill Name</h2>
-                                <Input onChange={(e)=>setName(e.target.value)} placeholder="eg. Hydro Bill" />
+                                <Input onChange={(e) => setName(e.target.value)} value={name} placeholder="eg. Hydro Bill" />
                             </div>
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Charge</h2>
-                                <Input onChange={(e)=>setCharge(e.target.value)} placeholder="eg. 200" />
+                                <Input onChange={(e) => setCharge(e.target.value)} value={charge} placeholder="eg. 200" />
                             </div>
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Date</h2>
-                                <Input onChange={(e)=>setDate(e.target.value)} placeholder="eg.20/01/2024 (dd/mm/yyyy)" />
+                                <Input onChange={(e) => setDate(e.target.value)} value={date} placeholder="eg. 20/01/2024 (dd/mm/yyyy)" />
                             </div>
                             <div className='p-3 flex items-start flex-col gap-2'>
                                 <h2>Type</h2>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button className='w-full' variant='outline'>{type}<ChevronDown/></Button>
+                                        <Button className='w-full' variant='outline'>{type}<ChevronDown /></Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
                                         <DropdownMenuRadioGroup value={type} onValueChange={setType}>
@@ -104,12 +96,10 @@ const CreateBill = ({ refreshData }) => {
                             <DialogClose asChild>
                                 <Button disabled={!(name && charge && date)} onClick={() => addBill()}>Save</Button>
                             </DialogClose>
-                        
                         </DialogFooter>
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
-
         </div>
     )
 }

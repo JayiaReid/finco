@@ -91,6 +91,18 @@ const ExpensesPage = () => {
     setList(result)
   }
 
+  const retireBudget = async (state)=>{
+
+    const result = await db.update(Budgets).set({
+      retired:state
+    }).where(eq(Budgets.id, BudgetInfo.id))
+
+    if(result){
+      console.log('retired')
+      router.push('/dashboard/budgets'); 
+    }
+  }
+
   const deleteBudget= async ()=>{
     try {
         if (!id) {
@@ -119,10 +131,10 @@ const ExpensesPage = () => {
       <h2 onClick={()=>router.push('/dashboard/budgets')} className='m-2 cursor-pointer items-end justify-end font-semibold flex gap-2'><ArrowLeftToLine/> Go Back to Budgets</h2>
       <div className='flex justify-between items-center'>
         <h2 className='text-2xl font-bold w-full'>My Expenses</h2>
-        <div className='flex place-items-end w-full justify-end m-2 '>
+        <div className='flex gap-2 place-items-end w-full justify-end m-2 '>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className='hover:bg-accent text-destructive bg-transparent outline-none border-none shadow-none'><Trash>Delete a Budget</Trash></Button>
+              <Button variant='destructive' className='shadow-sm'>Delete</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -138,7 +150,8 @@ const ExpensesPage = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <CreateBudget exisitingData={BudgetInfo} refreshData={getBudgets} edit={true} />
+          {BudgetInfo.retired==true? null :<CreateBudget exisitingData={BudgetInfo} refreshData={getBudgets} edit={true} />}
+          {BudgetInfo.retired==true? <Button variant='outline' onClick={()=>retireBudget(false)}>UnRetire</Button> :<Button variant='outline' onClick={()=>retireBudget(true)}>Retire</Button>}
         </div>
       </div>
 

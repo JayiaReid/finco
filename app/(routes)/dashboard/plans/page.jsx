@@ -17,6 +17,7 @@ import {
 const plansPage = () => {
 
   const { user } = useUser()
+  const [retired, setRetired] = useState([])
   const [planlist, setPlanList] = useState([])
 
   useEffect(() => {
@@ -36,8 +37,12 @@ const plansPage = () => {
         .groupBy(Plans.id)
         .orderBy(desc(Plans.id))
       console.log(result)
-      setPlanList(result)
-      console.log(planlist);
+      
+      const retired = result.filter(plan => plan.retired == true)
+      const current = result.filter(plan=>plan.retired!==true)
+      setPlanList(current)
+      
+      setRetired(retired)
     } catch (error) {
       console.error('Error fetching budgets:', error);
     }
@@ -73,6 +78,14 @@ const plansPage = () => {
           <Plan item={item} />
         ))}
       </div>
+
+      <h2 className='my-3 text-2xl font-bold'>Retired Plans</h2>
+      <div className='grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1'>
+        {retired.map((plan,index)=>(
+        <Plan item={plan}/>
+      ))}
+      </div>
+      
 
     </div>
   )

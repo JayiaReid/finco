@@ -55,7 +55,8 @@ const CreateBudget = ({ edit, exisitingData, refreshData }) => {
                 name: budgetName,
                 amount: amount,
                 icon: emoji,
-                createdBy: user.id
+                createdBy: user.id,
+                retired:false
             })
             console.log(result)
             if (result) {
@@ -78,7 +79,7 @@ const CreateBudget = ({ edit, exisitingData, refreshData }) => {
 
             <Dialog>
                 <DialogTrigger><div className=''>
-                    {edit ? <Pencil className='text-3xl' onClick={() => editBudget()} /> : <Button>Add New Budget +</Button>}
+                    {edit ? <Button onClick={() => editBudget()}>Edit</Button> : <Button>Add New Budget +</Button>}
                 </div></DialogTrigger>
                 <DialogContent className='m-2'>
                     <DialogHeader>

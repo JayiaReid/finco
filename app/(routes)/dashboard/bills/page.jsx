@@ -5,27 +5,23 @@ import CreateBill from './_components/CreateBill'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../components/ui/tooltip'
 import { db } from '../../../../utils/dbConfig'
 import { Bills } from '../../../../utils/schema'
-import { eq } from 'drizzle-orm'
+import { eq, getTableColumns, sql } from 'drizzle-orm'
 import { useUser } from '@clerk/nextjs'
 import BillCards from './_components/Cards'
 import { Checkbox } from '../../../../components/ui/checkbox'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger } from '../../../../components/ui/dialog'
 import { Input } from '../../../../components/ui/input'
 import { Button } from '../../../../components/ui/button'
+import PaidBillsComponent from './_components/PaidBills'
+import PendingBillsComponent from './_components/PendingBills'
 
-// set up logic about repeating bills
 // set up the calculations as well
 // set up user money stats using dashboard icon to finish setting up
 // where income per month is defined
-// set up budget and plan expiry
-//repeats and .. inst working in saving
 
 const BillsPage = () => {
   const thisyear = Number(new Date().getFullYear())
   const thismonth = Number(new Date().getMonth())
-  const [consistentBills, setCBills] = useState([])
-  const [inconsistentBills, setIBills] = useState([])
-  const [onceBills, setOBills] = useState([])
   const [totalPaid, setTotalPaid] = useState(0)
   const [billBudget, setBillBudget] = useState(0)
   const [leftToPay, setLeftToPay] = useState(0)
@@ -110,20 +106,43 @@ const BillsPage = () => {
   }
 
   const getBillsList = async () => {
-    if (user) {
-      const result = await db.select().from(Bills).where(eq(Bills.createdBy, user.id))
-
+    if (!user) return;
+  
+    try {
+      const result = await db.select({
+        ...getTableColumns(Bills),
+        totalCharge: sql`sum(CAST(${Bills.charge} AS NUMERIC))`.mapWith(Number),
+        totalItems: sql`count(${Bills.id})`.mapWith(Number),
+      })
+      .from(Bills)
+      .where(eq(Bills.createdBy, user.id))
+      .groupBy(Bills.id);
+  
       if (result) {
-        const monthFilter = result.filter(element => extractMonth(element.date) === month + 1)
-        const filteredBills = monthFilter.filter(element => extractYear(element.date) === year)
-        const paid = filteredBills.filter(bill => bill.paid)
-        const pending = filteredBills.filter(bill => !bill.paid)
-
-        setPaidBills(paid)
-        setPending(pending)
+        const monthFilter = result.filter(element => extractMonth(element.date) === month + 1);
+        const filteredBills = monthFilter.filter(element => extractYear(element.date) === year);
+        const paid = filteredBills.filter(bill => bill.paid);
+        const pending = filteredBills.filter(bill => !bill.paid);
+  
+        setPaidBills(paid);
+        setPending(pending);
+  
+        let totalPaid = 0;
+        paid.forEach(bill => {
+          totalPaid += Number(bill.charge);
+        });
+        setTotalPaid(totalPaid);
+  
+        let totalLeftToPay = 0;
+        pending.forEach(bill => {
+          totalLeftToPay += Number(bill.charge);
+        });
+        setLeftToPay(totalLeftToPay);
       }
+    } catch (error) {
+      console.error('Error fetching bills:', error);
     }
-  }
+  };
 
   const setPaid = async (id, status) => {
 
@@ -134,10 +153,21 @@ const BillsPage = () => {
     getBillsList()
   }
 
+  const deleteBill = async (id) =>{
+    try {
+      const result = await db.delete(Bills).where(eq(Bills.id, id))
+      console.log(result)
+
+      getBillsList()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return user ? (
     <div className='p-10'>
       <div className='flex justify-between items-center'>
-        <h2 className='font-bold text-3xl'>Tracking Bills</h2>
+        <h2 className='font-bold p-5 text-3xl'>Tracking Bills</h2>
         <div className='flex gap-3 items-center'>
           <CreateBill refreshData={getBillsList} />
           <TooltipProvider>
@@ -157,8 +187,8 @@ const BillsPage = () => {
       <BillCards
         past={past}
         thisyear={thisyear}
-        billBudget={billBudget}
-        setBillBudget={setBillBudget}
+        // billBudget={billBudget}
+        // setBillBudget={setBillBudget}
         totalPaid={totalPaid}
         leftToPay={leftToPay}
         month={month}
@@ -168,145 +198,9 @@ const BillsPage = () => {
         setyear={setyear}
       />
 
-      <div className='mt-5'>
-        <h2 className='text-2xl font-bold'>Pending Bills</h2>
-        {pending.length > 0 ? <div className='grid gap-4 mt-5 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1'>
-          {pending.map((bill, index) => (
-            // <div key={index} className='rounded-lg p-5 border flex flex-col gap-2'>
-            <div key={index} className="p-4 border rounded-lg">
-              <div className="flex gap-2 items-center justify-between">
-                <div className="flex gap-2 items-center">
-                  <h2 className="rounded-full bg-accent text-2xl p-3">
-                    {bill?.icon}
-                  </h2>
-                  <div>
-                    <h2 className="font-bold">
-                      {bill?.name}
-                    </h2>
+      <PendingBillsComponent pending={pending} setPaid={setPaid} createNextBill={createNextBill} setcharge={setcharge}  deleteBill={deleteBill} charge={charge} />
+      <PaidBillsComponent paidBills={paidBills} setPaid={setPaid} createNextBill={createNextBill} setcharge={setcharge} deleteBill={deleteBill} charge={charge} />
 
-                  </div>
-                </div>
-                <h2 className="font-bold text-primary">${bill?.charge}</h2>
-              </div>
-              <h2 className='text-md mt-5 flex gap-3'><div className='font-semibold'>Bill Date:</div> {bill?.date}</h2>
-              <h2 className='text-md mt-5 flex items-center gap-3'><Checkbox id="status" onClick={() => setPaid(bill?.id, true)} /> <label htmlFor='status' className='font-semibold'>Paid?</label></h2>
-              {bill?.repeats && bill?.consistency ?
-                <h2 >
-                  {bill?.continued == true ? <div className='text-md mt-5 flex items-center gap-3'>
-                    <CheckIcon id="repeats" />
-                    <label htmlFor='repeats' className='font-semibold'>Continues next month</label>
-                  </div> : <div className='text-md mt-5 flex items-center gap-3'>
-                    <Checkbox id="repeats" onClick={() => createNextBill(bill, bill.charge)} />
-                    <label htmlFor='repeats' className='font-semibold'>Continues next month?</label>
-                  </div>}
-
-                </h2> : null}
-              {bill?.repeats && bill?.consistency === false ? (
-                bill.continued !== true ? (
-                  <Dialog>
-                    <DialogTrigger>
-                      <h2 className='text-md mt-5 flex items-center gap-3'>
-                        <Checkbox id="repeats" onClick={() => createNextBill(bill, bill.charge)} />
-                        <label htmlFor='repeats' className='font-semibold'>Continues next month?</label>
-                      </h2>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <h2 className='text-lg font-bold'>Enter next bill's charge</h2>
-                      <Input
-                        type='number'
-                        placeholder='e.g. 200'
-                        value={charge}
-                        onChange={(e) => setcharge(e.target.value)}
-                      />
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button onClick={() => createNextBill(bill, charge)}>Create Next Bill</Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                ) : (
-                  <div className='text-md mt-5 flex items-center gap-3'>
-                    <CheckIcon id="repeats" />
-                    <label htmlFor='repeats' className='font-semibold'>Continues next month</label>
-                  </div>
-                )
-              ) : null}
-
-            </div>
-          ))}
-        </div> : <h2 className='text-lg p-5 flex justify-center'>No Pending Bills</h2>}
-      </div>
-
-      <div className='mt-5'>
-        <h2 className='text-2xl font-bold'>Paid Bills</h2>
-        {paidBills.length > 0 ? <div className='grid gap-4 mt-5 lg:grid-cols-4 sm:grid-cols-1 md:grid-cols-2'>
-          {paidBills.map((bill, index) => (
-            <div key={index} className="p-4 border rounded-lg">
-              <div className="flex gap-2 items-center justify-between">
-                <div className="flex gap-2 items-center">
-                  <h2 className="rounded-full bg-accent text-2xl p-3">
-                    {bill?.icon}
-                  </h2>
-                  <div>
-                    <h2 className="font-bold">
-                      {bill?.name}
-                    </h2>
-
-                  </div>
-                </div>
-                <h2 className="font-bold text-primary">${bill?.charge}</h2>
-              </div>
-              <h2 className='text-md mt-5 flex gap-3'><div className='font-semibold'>Bill Date:</div> {bill?.date}</h2>
-              <h2 className='text-md mt-5 flex items-center gap-3'><CheckIcon className='cursor-pointer' id="status" onClick={() => setPaid(bill?.id, false)} /> <label htmlFor='status' className='font-semibold'>Paid?</label></h2>
-              {bill?.repeats && bill?.consistency ?
-                <h2 >
-                  {bill?.continued == true ? <div className='text-md mt-5 flex items-center gap-3'>
-                    <CheckIcon id="repeats" />
-                    <label htmlFor='repeats' className='font-semibold'>Continues next month</label>
-                  </div> : <div className='text-md mt-5 flex items-center gap-3'>
-                    <Checkbox id="repeats" onClick={() => createNextBill(bill, bill.charge)} />
-                    <label htmlFor='repeats' className='font-semibold'>Continues next month?</label>
-                  </div>}
-
-                </h2> : null}
-              {bill?.repeats && bill?.consistency === false ? (
-                bill.continued !== true ? (
-                  <Dialog>
-                    <DialogTrigger>
-                      <h2 className='text-md mt-5 flex items-center gap-3'>
-                        <Checkbox id="repeats" onClick={() => createNextBill(bill, bill.charge)} />
-                        <label htmlFor='repeats' className='font-semibold'>Continues next month?</label>
-                      </h2>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <h2 className='text-lg font-bold'>Enter next bill's charge</h2>
-                      <Input
-                        type='number'
-                        placeholder='e.g. 200'
-                        value={charge}
-                        onChange={(e) => setcharge(e.target.value)}
-                      />
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button onClick={() => createNextBill(bill, charge)}>Create Next Bill</Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                ) : (
-                  <div className='text-md mt-5 flex items-center gap-3'>
-                    <CheckIcon id="repeats" />
-                    <label htmlFor='repeats' className='font-semibold'>Continues next month</label>
-                  </div>
-                )
-              ) : null}
-            </div>
-          ))}</div> : <h2 className='text-lg p-5 flex justify-center'>No Paid Bills </h2>
-        }
-
-
-      </div>
     </div>
   ) : (
     <div className='flex items-center justify-center'><Loader className='animate-spin' /></div>

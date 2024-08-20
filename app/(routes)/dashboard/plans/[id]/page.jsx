@@ -93,6 +93,18 @@ const Page = () => {
     }
   };
 
+  const retirePlan = async (state)=>{
+
+    const result = await db.update(Plans).set({
+      retired:state
+    }).where(eq(Plans.id, info.id))
+
+    if(result){
+      console.log('retired')
+      router.push('/dashboard/plans'); 
+    }
+  }
+
   return (
     <div className='p-10'>
       <h2 onClick={() => router.push('/dashboard/plans')} className='m-2 cursor-pointer items-end justify-end font-semibold flex gap-2'>
@@ -100,9 +112,10 @@ const Page = () => {
       </h2>
       <div className='flex items-center my-4 justify-between'>
         <h2 className='text-3xl font-bold'>{info?.name}</h2>
-        <AlertDialog>
+        <div className='flex items-center gap-2'>
+           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className='hover:bg-accent text-destructive bg-transparent outline-none border-none shadow-none'><Trash /></Button>
+              <Button variant='destructive'>Delete</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -118,6 +131,9 @@ const Page = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+          {info.retired==true? <Button variant='outline' onClick={()=>retirePlan(false)}>UnRetire</Button> :<Button variant='outline' onClick={()=>retirePlan(true)}>Retire</Button>}
+        </div>
+       
       </div>
       <Plan item={info} display={true} />
 

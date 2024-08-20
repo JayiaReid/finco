@@ -21,12 +21,7 @@ const SideNavDef = ({showNav}) => {
             icon: PiggyBankIcon,
             path: '/dashboard/budgets',
         },
-        {
-            id: 3,
-            title: 'Plan',
-            icon: ReceiptText,
-            path: '/dashboard/plans',
-        },
+        
         {
             id: 7,
             title: 'Bills',
@@ -41,11 +36,16 @@ const SideNavDef = ({showNav}) => {
         },
         {
             id: 6,
-            title: 'Investments',
+            title: 'Debts',
             icon: Landmark,
-            path: '/dashboard/investments',
+            path: '/dashboard/Debts',
         },
-        
+        {
+            id: 3,
+            title: 'Plans',
+            icon: ReceiptText,
+            path: '/dashboard/plans',
+        },
         {
             id: 5,
             title: 'Home',

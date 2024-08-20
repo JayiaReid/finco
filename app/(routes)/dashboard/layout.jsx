@@ -10,6 +10,8 @@ import { eq } from 'drizzle-orm';
 import { Budgets } from '../../../utils/schema';
 import { useRouter } from 'next/navigation';
 import SideNavDef from './_components/SideNavDef'
+import { Loader2Icon } from 'lucide-react';
+import { Button } from '../../../components/ui/button';
 const DashboardLayout = ({ children }) => {
     const [nav, showNav] = useState(false);
 
@@ -18,15 +20,29 @@ const DashboardLayout = ({ children }) => {
 
     const checkBudgets = async () => {
         const result = await db.select().from(Budgets).where(eq(Budgets.createdBy, user.id))
-        console.log(result)
+        // console.log(result)
         if(result?.length==0){
             router.push('/dashboard/budgets')
         }
     }
 
+    const checkUser=()=>{
+        if(!user){
+            router.push('/')
+        }
+    }
+
+    // useEffect(()=>{
+    //     checkUser()
+    // },[user])
+
     useEffect(() => {
         user&&checkBudgets()
     }, [user])
+
+    if (!user) {
+        return <div className='h-screen flex items-center justify-center'><Loader2Icon className='animate-spin'/></div>;
+      }    
 
     return (
         <div>

@@ -24,12 +24,7 @@ const SideNav = ({  showNav }) => {
             icon: PiggyBankIcon,
             path: '/dashboard/budgets',
         },
-        {
-            id: 3,
-            title: 'Plans',
-            icon: ReceiptText,
-            path: '/dashboard/plans',
-        },
+        
         {
             id: 7,
             title: 'Bills',
@@ -44,11 +39,16 @@ const SideNav = ({  showNav }) => {
         },
         {
             id: 6,
-            title: 'Investments',
+            title: 'Debts',
             icon: Landmark,
-            path: '/dashboard/investments',
+            path: '/dashboard/debts',
         },
-        
+        {
+            id: 3,
+            title: 'Plans',
+            icon: ReceiptText,
+            path: '/dashboard/plans',
+        },
         {
             id: 5,
             title: 'Home',
@@ -60,8 +60,11 @@ const SideNav = ({  showNav }) => {
 
     return (
         <div className='h-screen text-primary-foreground p-5'>
-            <SidebarCloseIcon className='ml-40 cursor-pointer my-4' onClick={() => showNav(false)} />
-            <Image src='/budget.png' alt='Budget' width={50} height={50} />
+            <div className='w-full flex-row-reverse flex justify-between items-center'>
+                <SidebarCloseIcon className='cursor-pointer my-4' onClick={() => showNav(false)} />
+                <Image src='/budget.png' alt='Budget' width={50} height={50} />
+            </div>
+            
             <div>
                 {menu.map((item) => (
                     <h2

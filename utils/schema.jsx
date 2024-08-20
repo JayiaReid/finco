@@ -5,7 +5,8 @@ export const Budgets=pgTable('budgets',{
     name:varchar('name').notNull(),
     amount:varchar('amount').notNull(),
     icon:varchar('icon'),
-    createdBy:varchar('createdBy').notNull()
+    createdBy:varchar('createdBy').notNull(),
+    retired:boolean('retired')
 })
 
 export const Expenses=pgTable('expenses', {
@@ -21,7 +22,8 @@ export const Plans=pgTable('plans',{
     name:varchar('name').notNull(),
     icon:varchar('icon'),
     notes:varchar('notes'),
-    createdBy:varchar('createdBy').notNull()
+    createdBy:varchar('createdBy').notNull(),
+    retired:boolean('retired')
 })
 
 export const PlanItems = pgTable('planItems',{
@@ -44,7 +46,9 @@ export const UserStats = pgTable('userStats',{
     invested:varchar('invested'),
     total:varchar('total'),
     userid:varchar('userid').notNull(),
-    billed:varchar('billed')
+    billed:varchar('billed'),
+    month:varchar('month'),
+    year:varchar('year')
 })
 
 export const Bills = pgTable('bills',{
@@ -58,4 +62,21 @@ export const Bills = pgTable('bills',{
     paid:boolean('paid'),
     icon:varchar('icon'),
     continued:boolean('continued')
+})
+
+export const Savings = pgTable('savings', {
+    id:varchar('id').primaryKey(),
+    name:varchar('name').notNull(),
+    goal: varchar('goal').notNull(),
+    saved: varchar('saved'),
+    left:varchar('left'),
+    reached:boolean('reached'),
+    createdBy:varchar('createdby'),
+    icon:varchar('icon'),
+})
+
+export const SavingsDeposits = pgTable('savingsDeposits',{
+    id:varchar('id').primaryKey(),
+    savingsId:varchar('savingsId').references(()=>Savings.id),
+    amount:varchar('amount')
 })
