@@ -8,17 +8,40 @@ import { Button } from '../../../../../components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../../../../components/ui/dialog'
 import { Input } from '../../../../../components/ui/input'
 import { Toast } from '../../../../../components/ui/toast'
+import { eq } from 'drizzle-orm'
 
-const CreateSavings = ({ refreshData }) => {
+const CreateSavings = ({ refreshData, edit, existingData }) => {
     const [name, setName] = useState('')
     const [goal, setGoal] = useState(0)
     const { user } = useUser()
     const [icon, setIcon] = useState('$$')
     const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
 
+    const editSavings = async () =>{
+        setGoal(existingData?.goal)
+        setName(existingData?.name)
+        setIcon(existingData?.icon)
+    }
+
     const addSavings = async () => {
         try {
-            const result = await db.insert(Savings).values({
+
+            let left=goal-Number(existingData?.saved)
+
+            if(existingData){
+                const res = await db.update(Savings).set({
+                    left,
+                    icon,
+                    goal,
+                    name
+                }).where(eq(Savings.id, existingData?.id))
+
+                if(res){
+                    console.log("edited")
+                }
+                refreshData()
+            }else{
+                const result = await db.insert(Savings).values({
                 id: Date.now(),
                 icon,
                 name,
@@ -33,6 +56,8 @@ const CreateSavings = ({ refreshData }) => {
                 setName('')
                 setGoal('')
                 refreshData()
+            }
+            
             
         } catch (error) {
             console.log(error)
@@ -44,7 +69,7 @@ const CreateSavings = ({ refreshData }) => {
     return (
         <div><Dialog>
             <DialogTrigger asChild>
-                <Button>Create New Savings Tracker + </Button>
+            {edit ? <Button onClick={() => editSavings()}>Edit</Button>: <Button>Create New Savings Tracker + </Button>}
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

@@ -38,12 +38,6 @@ const SideNav = ({  showNav }) => {
             path: '/dashboard/savings',
         },
         {
-            id: 6,
-            title: 'Debts',
-            icon: Landmark,
-            path: '/dashboard/debts',
-        },
-        {
             id: 3,
             title: 'Plans',
             icon: ReceiptText,

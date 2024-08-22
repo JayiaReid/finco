@@ -33,6 +33,7 @@ import {
   } from '../../../../../components/ui/alert-dialog'
 import { toast } from '../../../../../components/ui/use-toast';
 import ItemsTable from '../_components/ItemsTable'
+import CreatePlan from '../_components/CreatePlan';
 
 const Page = () => {
   const { id } = useParams();
@@ -131,6 +132,7 @@ const Page = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+          {info.retired==true? null: <CreatePlan refreshData={()=>getPlanInfo()} edit={true} existingData={info} />}
           {info.retired==true? <Button variant='outline' onClick={()=>retirePlan(false)}>UnRetire</Button> :<Button variant='outline' onClick={()=>retirePlan(true)}>Retire</Button>}
         </div>
        

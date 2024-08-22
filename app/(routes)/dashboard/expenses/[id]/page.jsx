@@ -150,7 +150,7 @@ const ExpensesPage = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          {BudgetInfo.retired==true? null :<CreateBudget exisitingData={BudgetInfo} refreshData={getBudgets} edit={true} />}
+          {BudgetInfo.retired==true? null :<CreateBudget exisitingData={BudgetInfo} refreshData={getBudgetInfo} edit={true} />}
           {BudgetInfo.retired==true? <Button variant='outline' onClick={()=>retireBudget(false)}>UnRetire</Button> :<Button variant='outline' onClick={()=>retireBudget(true)}>Retire</Button>}
         </div>
       </div>

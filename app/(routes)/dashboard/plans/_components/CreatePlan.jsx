@@ -18,44 +18,68 @@ import { useUser } from '@clerk/nextjs'
 import { Plans } from '../../../../../utils/schema'
 import { db } from '../../../../../utils/dbConfig'
 import { toast } from '../../../../../components/ui/use-toast'
-import {Textarea} from '../../../../../components/ui/textarea'
+import { Textarea } from '../../../../../components/ui/textarea'
+import { eq } from 'drizzle-orm'
 
-const CreatePlan = ({refreshData}) => {
-    const [name, setName]=useState()
-    const [notes, setNotes]= useState()
+const CreatePlan = ({ refreshData, edit, existingData }) => {
+    const [name, setName] = useState('')
+    const [notes, setNotes] = useState('')
     const [openEmojiPicker, setopenEmojiPicker] = useState(false)
     const [emoji, setEmoji] = useState('$$')
 
-    const {user}=useUser()
+    const { user } = useUser()
 
-    const CreatePlan = async () => {
-        const result = await db.insert(Plans).values({
-            id: Date.now(),
-            name: name,
-            icon: emoji,
-            notes:notes,
-            createdBy: user.id
-        })
-
-        console.log(result)
-
-        if (result) {
-            refreshData()
-            toast({
-                title: "New Plan Created!"
-            })
-        } else {
-            toast({
-                title: "Uh oh! Something went wrong.",
-                description: "There was a problem with your request.",
-            })
-        }
+    const editPlan = () => {
+        setName(existingData?.name)
+        setEmoji(existingData?.icon)
+        setNotes(existingData?.notes)
     }
 
-  return (
-    <div>
-        <Dialog>
-                <DialogTrigger><Button>Add New Plan +</Button></DialogTrigger>
+    const CreatePlan = async () => {
+        if (existingData) {
+            const result = await db.update(Plans).set({
+                name,
+                icon: emoji,
+                notes
+            }).where(eq(Plans.id, existingData?.id))
+            
+            if(result){
+                console.log("edited")
+            }
+            refreshData()
+        } else {
+            const result = await db.insert(Plans).values({
+                id: Date.now(),
+                name: name,
+                icon: emoji,
+                notes: notes,
+                createdBy: user.id
+            })
+            console.log(result)
+
+            if (result) {
+                refreshData()
+                toast({
+                    title: "New Plan Created!"
+                })
+            } else {
+                toast({
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                })
+            }
+        }
+
+
+
+    }
+
+    return (
+        <div>
+            <Dialog>
+                <DialogTrigger>
+                    {edit ? <Button onClick={() => editPlan()}>Edit</Button> : <Button>Add New Plan +</Button>}
+                </DialogTrigger>
                 <DialogContent className='m-2'>
                     <DialogHeader>
                         <DialogTitle>Create New Plan</DialogTitle>
@@ -65,23 +89,23 @@ const CreatePlan = ({refreshData}) => {
                             {openEmojiPicker ? <div className='absolute'><EmojiPicker onEmojiClick={(e) => { setEmoji(e.emoji); setopenEmojiPicker(false) }} theme='dark' style={{ background: "#020817" }} /></div> : <div></div>}
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Plan Name</h2>
-                                <Input onChange={(e) => setName(e.target.value)} placeholder="eg. Dorm Checklist" />
+                                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="eg. Dorm Checklist" />
                             </div>
                             <div className='p-3 flex flex-col gap-2'>
                                 <h2>Notes</h2>
-                                <Textarea onChange={(e) => setNotes(e.target.value)} placeholder="eg. This is a checklist to outline what I want for dorm (optional)" />
+                                <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="eg. This is a checklist to outline what I want for dorm (optional)" />
                             </div>
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="sm:justify-start">
                         <DialogClose asChild>
-                        <Button onClick={CreatePlan} disabled={!(name)} className='my-5'>Create Plan</Button>
+                            <Button onClick={() => CreatePlan()} disabled={!(name)} className='my-5'>Save</Button>
                         </DialogClose>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-    </div>
-  )
+        </div>
+    )
 }
 
 export default CreatePlan

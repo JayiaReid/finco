@@ -32,23 +32,28 @@ const CreateBudget = ({ edit, exisitingData, refreshData }) => {
     const editBudget = () => {
         setBudgetName(exisitingData?.name)
         setAmount(exisitingData?.amount)
+        setEmoji(exisitingData?.icon)
     }
 
     const CreateBudget = async () => {
 
         if (exisitingData) {
 
-            const res = await db.delete(Budgets).where(eq(Budgets.id, exisitingData?.id));
+            // const res = await db.delete(Budgets).where(eq(Budgets.id, exisitingData?.id));
 
-            const result = await db.insert(Budgets).values({
-                id: exisitingData?.id,
+            const result = await db.update(Budgets).set({
                 name: budgetName,
-                amount: amount,
-                icon: emoji,
-                createdBy: user.id
-            })
+                amount, 
+                icon: emoji
+            }).where(eq(Budgets.id, exisitingData?.id))
 
-            console.log('edited')
+            if(result){
+                console.log('edited')
+                refreshData()
+            }
+
+            
+
         } else {
             const result = await db.insert(Budgets).values({
                 id: Date.now(),
@@ -99,7 +104,7 @@ const CreateBudget = ({ edit, exisitingData, refreshData }) => {
                     </DialogHeader>
                     <DialogFooter className="sm:justify-start">
                         <DialogClose asChild>
-                            <Button onClick={CreateBudget} disabled={!(budgetName && amount)} className='my-5'>Create Budget</Button>
+                            <Button onClick={CreateBudget} disabled={!(budgetName && amount)} className='my-5'>Save</Button>
                         </DialogClose>
                     </DialogFooter>
                 </DialogContent>

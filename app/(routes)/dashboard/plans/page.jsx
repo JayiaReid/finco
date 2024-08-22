@@ -55,7 +55,7 @@ const plansPage = () => {
       <div className='flex items-center justify-between'>
         <h2 className='text-3xl p-5 font-bold flex gap-5'>My Plans</h2>
         <div className='flex gap-3 items-center'>
-          <CreatePlan refreshData={getPlans} />
+          <CreatePlan refreshData={getPlans} existingData={null} edit={false} />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

@@ -37,7 +37,6 @@ const SavingsPage = () => {
         .groupBy(Savings.id)
 
       if (result) {
-        console.log('savings', result)
         setList(result)
 
         let count = 0
@@ -68,7 +67,7 @@ const SavingsPage = () => {
       <div className='flex justify-between items-center'>
         <h2 className='font-bold p-5 text-3xl'>Savings Dashboard</h2>
         <div className='flex gap-3 items-center'>
-          <CreateSavings refreshData={getSavingsList()} />
+          <CreateSavings refreshData={getSavingsList()} edit={false} existingData={null} />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
