@@ -63,7 +63,7 @@ const SideNav = ({  showNav }) => {
                 {menu.map((item) => (
                     <h2
                         key={item.id}
-                        className={`flex p-4 cursor-pointer mt-5 hover:bg-accent hover:text-accent-foreground rounded-md gap-2 items-center text-primary-foreground ${
+                        className={`flex p-5 cursor-pointer mt-5 hover:bg-accent hover:text-accent-foreground rounded-md gap-2 items-center text-primary-foreground ${
                             param === item.path && 'text-secondary-foreground bg-accent'
                         }`}
                         onClick={() => {router.push(item.path); showNav(false)}}

@@ -41,12 +41,7 @@ export const PlanItems = pgTable('planItems',{
 export const UserStats = pgTable('userStats',{
     id:varchar('id').primaryKey(),
     income:varchar('income').notNull(),
-    budgeted:varchar('budgeted'),
-    saved:varchar('saved'),
-    invested:varchar('invested'),
-    total:varchar('total'),
     userid:varchar('userid').notNull(),
-    billed:varchar('billed'),
     month:varchar('month'),
     year:varchar('year')
 })
@@ -73,6 +68,7 @@ export const Savings = pgTable('savings', {
     reached:boolean('reached'),
     createdBy:varchar('createdby'),
     icon:varchar('icon'),
+    retired:boolean('retired')
 })
 
 export const SavingsDeposits = pgTable('savingsDeposits',{

@@ -15,6 +15,7 @@ const SavingsPage = () => {
 
   const { user } = useUser()
   const [savingsList, setList] = useState([])
+  const [retired, setRetired] = useState([])
   const [count, setCount] = useState(0)
   const [saved, setSaved] = useState(0)
   const [left, setLeft] = useState(0)
@@ -37,14 +38,18 @@ const SavingsPage = () => {
         .groupBy(Savings.id)
 
       if (result) {
-        setList(result)
+
+        const current = result.filter(item => item.retired !== true)
+        const retired = result.filter(item => item.retired === true)
+        setRetired(retired)
+        setList(current)
 
         let count = 0
         let goal = 0
         let saved = 0
         let left = 0
 
-        result.forEach(item => {
+        current.forEach(item => {
           count += 1
           goal += Number(item.goal)
           left += Number(item.left)
@@ -89,6 +94,16 @@ const SavingsPage = () => {
           <Tracker item={item} />
         ))}
       </div>
+      
+      <h2 className='font-bold my-5 text-2xl'>Retired Trackers</h2>
+
+      {retired.length > 0 ? <div className='grid gap-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 '>
+        {retired.map((item, index) => (
+          <div key={index}>
+            <Tracker item={item} />
+          </div>
+        ))}
+      </div> : <h2 className='text-lg p-5 flex justify-center'>No retired trackers</h2>}
 
     </div>
   )

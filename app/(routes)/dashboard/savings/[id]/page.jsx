@@ -52,7 +52,20 @@ const History = () => {
 
   }
 
+  const retire = async (state)=>{
+    try {
+      const result = await db.update(Savings).set({
+        retired:state
+      }).where(eq(Savings.id, info.id))
   
+      if(result){
+        console.log('retired')
+        router.push('/dashboard/savings'); 
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const deleteDeposit = async (Depositid, amount) =>{
     try {
@@ -99,8 +112,9 @@ const History = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
+    return `${day}/${month}/${year}`;
   };
+
   return (
     <div className='p-10'>
       <h2 onClick={() => router.push('/dashboard/savings')} className='m-2 cursor-pointer items-end justify-end font-semibold flex gap-2'><ArrowLeftToLine /> Go Back to Savings</h2>
@@ -125,7 +139,8 @@ const History = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <CreateSavings refreshData={getInfo()} existingData={info} edit={true} />
+          {info.retired==true? null :<CreateSavings refreshData={getInfo()} existingData={info} edit={true} />}
+          {info.retired==true?<Button variant='outline' onClick={()=>retire(false)}>UnRetire</Button> :<Button variant='outline' onClick={()=>retire(true)}>Retire</Button>}
         </div>
       </div>
 

@@ -49,7 +49,8 @@ const CreateSavings = ({ refreshData, edit, existingData }) => {
                 saved: 0,
                 left: goal,
                 reached: false,
-                createdBy: user.id
+                createdBy: user.id,
+                retired: false
             })
            
                 Toast({title: 'Added Sucessfully'})

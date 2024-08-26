@@ -12,10 +12,11 @@ import { useRouter } from 'next/navigation';
 import SideNavDef from './_components/SideNavDef'
 import { Loader2Icon } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
+
 const DashboardLayout = ({ children }) => {
     const [nav, showNav] = useState(false);
 
-    const { user } = useUser();
+    const { user, isSignedIn } = useUser();
     const router = useRouter()
 
     const checkBudgets = async () => {
@@ -39,6 +40,12 @@ const DashboardLayout = ({ children }) => {
     useEffect(() => {
         user&&checkBudgets()
     }, [user])
+
+    useEffect(()=>{
+        if(!isSignedIn && user){
+            router.push('/')
+        }
+    }, [isSignedIn, user])
 
     if (!user) {
         return <div className='h-screen flex items-center justify-center'><Loader2Icon className='animate-spin'/></div>;

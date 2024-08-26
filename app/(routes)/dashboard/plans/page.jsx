@@ -79,7 +79,7 @@ const plansPage = () => {
         ))}
       </div>
 
-      <h2 className='my-3 text-2xl font-bold'>Retired Plans</h2>
+      <h2 className='my-5 text-2xl font-bold'>Retired Plans</h2>
       <div className='grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1'>
         {retired.map((plan,index)=>(
         <Plan item={plan}/>

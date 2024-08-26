@@ -84,16 +84,22 @@ const ExpensesPage = () => {
   };
 
   const getExpensesList = async () => {
-    const result = await db.select().from(Expenses)
+    try {
+      const result = await db.select().from(Expenses)
       .where(eq(Expenses.budgetId, id))
       .orderBy(desc(Expenses.id))
     console.log(result)
     setList(result)
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   const retireBudget = async (state)=>{
 
-    const result = await db.update(Budgets).set({
+    try {
+      const result = await db.update(Budgets).set({
       retired:state
     }).where(eq(Budgets.id, BudgetInfo.id))
 
@@ -101,6 +107,11 @@ const ExpensesPage = () => {
       console.log('retired')
       router.push('/dashboard/budgets'); 
     }
+    } catch (error) {
+      console.log(error)
+    }
+
+    
   }
 
   const deleteBudget= async ()=>{
