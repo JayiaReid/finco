@@ -33,7 +33,7 @@ const BudgetDashboard = () => {
         retired: Budgets.retired
       })
       .from(Expenses)
-      .leftJoin(Budgets, eq(Budgets.id, Expenses.budgetId))  // Use Budgets table directly in leftJoin
+      .leftJoin(Budgets, eq(Budgets.id, Expenses.budgetId)) 
       .where(eq(Expenses.createdBy, user.id))
       .orderBy(desc(Expenses.id))
 
@@ -61,9 +61,9 @@ const BudgetDashboard = () => {
       .groupBy(Budgets.id);
 
       const currentBudgets = result.filter(budget => budget.retired !== true)
-      const noBills = currentBudgets.filter(budget => !budget.name.includes("Bills"));
+      // const noBills = currentBudgets.filter(budget => !budget.name.includes("Bills"));
 
-      setBudgetListInfo(noBills)
+      setBudgetListInfo(currentBudgets)
     //   console.log(budgetListInfo)
 
       getExpenses()

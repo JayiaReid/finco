@@ -1,6 +1,6 @@
 'use client';
 import { UserButton } from '@clerk/nextjs';
-import { Landmark, LayoutDashboardIcon, MessageCircleCodeIcon, PersonStanding, PiggyBankIcon, Receipt, ReceiptText, SidebarCloseIcon } from 'lucide-react';
+import { Banknote, Landmark, LayoutDashboardIcon, MessageCircleCodeIcon, PersonStanding, PiggyBankIcon, Receipt, ReceiptText, SidebarCloseIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -18,7 +18,7 @@ const SideNavDef = ({showNav}) => {
         {
             id: 2,
             title: 'Budgets',
-            icon: PiggyBankIcon,
+            icon: Banknote,
             path: '/dashboard/budgets',
         },
         

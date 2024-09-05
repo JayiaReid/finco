@@ -8,7 +8,6 @@ import { eq, getTableColumns, sql } from 'drizzle-orm'
 import { Savings, SavingsDeposits } from '../../../../utils/schema'
 import { useUser } from '@clerk/nextjs'
 import Tracker from './_components/Tracker'
-import Link from 'next/link'
 import Cards from './_components/Cards'
 
 const SavingsPage = () => {

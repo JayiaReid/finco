@@ -133,8 +133,6 @@ const ExpensesPage = () => {
         toast({ title: "Error deleting budget"});
         throw error;
     }
-
-    // ended at pasting the alert dialog for deleting budget
 }
 
   return (

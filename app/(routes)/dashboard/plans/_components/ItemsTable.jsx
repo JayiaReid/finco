@@ -6,7 +6,7 @@ import { desc, eq, getTableColumns, sql } from 'drizzle-orm';
 import { Keywords, PlanItems, Plans } from '../../../../../utils/schema';
 import { useUser } from '@clerk/nextjs';
 import { db } from '../../../../../utils/dbConfig';
-import { ArrowLeftToLine, ChevronDown, Pencil, Trash } from 'lucide-react';
+import { ChevronDown, Pencil, Trash } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -20,19 +20,8 @@ import {
 import { Input } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
 import { Textarea } from '../../../../../components/ui/textarea';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '../../../../../components/ui/alert-dialog'
 import { toast } from '../../../../../components/ui/use-toast';
-import { DropdownMenuItem, DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent, DropdownMenuGroup } from '../../../../../components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent, DropdownMenuGroup } from '../../../../../components/ui/dropdown-menu';
 
 const ItemsTable = ({ refreshData }) => {
 

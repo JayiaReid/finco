@@ -1,7 +1,7 @@
 'use client';
 
 import { UserButton } from '@clerk/nextjs';
-import { Landmark, LayoutDashboardIcon, MessageCircleCodeIcon, PersonStanding, PiggyBankIcon, Receipt, ReceiptText, SidebarCloseIcon } from 'lucide-react';
+import { Banknote, Landmark, LayoutDashboardIcon, MessageCircleCodeIcon, PersonStanding, PiggyBankIcon, Receipt, ReceiptText, SidebarCloseIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -21,7 +21,7 @@ const SideNav = ({  showNav }) => {
         {
             id: 2,
             title: 'Budgets',
-            icon: PiggyBankIcon,
+            icon: Banknote,
             path: '/dashboard/budgets',
         },
         
@@ -56,7 +56,11 @@ const SideNav = ({  showNav }) => {
         <div className='h-screen text-primary-foreground p-5'>
             <div className='w-full flex-row-reverse flex justify-between items-center'>
                 <SidebarCloseIcon className='cursor-pointer my-4' onClick={() => showNav(false)} />
-                <Image src='/budget.png' alt='Budget' width={50} height={50} />
+                <div className='flex items-center gap-2'>
+                    <Image src='/budget.png' alt='Budget' width={50} height={50} />
+                    <h2 className='font-extralight text-xl'>FinCo.</h2>
+                </div>
+                
             </div>
             
             <div>

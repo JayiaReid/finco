@@ -4,8 +4,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 const PieChartComponent = ({ item }) => {
 
   const data = [
-    { name: "Group A", value: Number(item?.saved) },
-    { name: "Group B", value: Number(item?.left) },
+    { name: "Saved", value: Number(item?.saved) },
+    { name: "Left", value: Number(item?.left) },
   ];
 
   const COLORS = ["#0F172A", "#F1F5F8"];

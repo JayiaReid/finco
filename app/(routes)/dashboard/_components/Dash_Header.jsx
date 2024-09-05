@@ -13,7 +13,6 @@ import {
   PopoverTrigger,
 } from "../../../../components/ui/popover"
 import Link from 'next/link'
-// will be constant but has the profile, messages dark mode and search
 
 const Dash_Header = ({ showNav }) => {
   return (

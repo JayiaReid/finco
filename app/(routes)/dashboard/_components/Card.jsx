@@ -48,21 +48,21 @@ const Card = ({list}) => {
         <div className='p-7 shadow-md border rounded-lg flex items-center justify-between '>
             <div>
                 <h2 className=''>Total Budget</h2>
-            <h2 className='font-bold text-xl'>${totalMoneyHave}</h2>
+            <h2 className='font-bold text-xl'>${Number(totalMoneyHave).toFixed(2)}</h2>
             </div>
             <PiggyBank className='bg-primary rounded-full text-primary-foreground h-10 w-10 p-2'/>
         </div>
         <div className='p-7 shadow-md border rounded-lg flex items-center justify-between '>
             <div>
                 <h2 className=''>Total Spend</h2>
-            <h2 className='font-bold text-xl'>${totalSpendings}</h2>
+            <h2 className='font-bold text-xl'>${Number(totalSpendings).toFixed(2)}</h2>
             </div>
             <Banknote className='bg-primary rounded-full text-primary-foreground h-10 w-10 p-2'/>
         </div>
         <div className='p-7 shadow-md border rounded-lg flex items-center justify-between '>
             <div>
                 <h2 className=''>Total Remaining</h2>
-            <h2 className='font-bold text-xl'>${totalMoneyHave - totalSpendings}</h2>
+            <h2 className='font-bold text-xl'>${Number(totalMoneyHave - totalSpendings).toFixed(2)}</h2>
             </div>
             <CircleDollarSign className='bg-primary rounded-full text-primary-foreground h-10 w-10 p-2'/>
         </div>

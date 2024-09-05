@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import BudgetList from './_components/List'
 import CreateBudget from './_components/CreateBudget'
 import { useUser } from '@clerk/nextjs'
 import { Info } from 'lucide-react'

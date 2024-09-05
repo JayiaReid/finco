@@ -7,19 +7,7 @@ import { PlanItems, Plans } from '../../../../../utils/schema';
 import { useUser } from '@clerk/nextjs';
 import { db } from '../../../../../utils/dbConfig';
 import { ArrowLeftToLine, Trash } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../../../../components/ui/table";
-import { Input } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
-import { Textarea } from '../../../../../components/ui/textarea';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -146,4 +134,3 @@ const Page = () => {
 
 export default Page;
 
-// price comparisons?

@@ -36,7 +36,7 @@ const PendingBillsComponent = ({pending, charge, setPaid, createNextBill,setchar
 
               </div>
             </div>
-            <h2 className="font-bold text-primary">${bill?.charge}</h2>
+            <h2 className="font-bold text-primary">${Number(bill?.charge).toFixed(2)}</h2>
           </div>
           <h2 className='text-md mt-5 flex gap-3'><div className='font-semibold'>Bill Date:</div> {bill?.date}</h2>
           <h2 className='text-md mt-5 flex items-center gap-3'><Checkbox id="status" onClick={() => setPaid(bill?.id, true)} /> <label htmlFor='status' className='font-semibold'>Paid?</label></h2>

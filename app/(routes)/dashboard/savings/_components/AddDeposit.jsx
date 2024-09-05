@@ -5,9 +5,11 @@ import { Button } from '../../../../../components/ui/button'
 import { db } from '../../../../../utils/dbConfig'
 import { Savings, SavingsDeposits } from '../../../../../utils/schema'
 import { eq } from 'drizzle-orm'
+import { useUser } from '@clerk/nextjs'
 
 const AddDeposit = ({refreshData, left, saved, id}) => {
     const [amount, setAmount] = useState('')
+    const {user} = useUser()
 
     const convertTimestampToDate = (timestamp) => {
         const date = new Date(Number(timestamp));
@@ -23,7 +25,8 @@ const AddDeposit = ({refreshData, left, saved, id}) => {
             const result = await db.insert(SavingsDeposits).values({
                 id: Date.now(),
                 amount,
-                savingsId: id
+                savingsId: id,
+                createdBy: user.id 
             })
             if(result){
                 const res = await db.update(Savings).set({

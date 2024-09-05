@@ -38,7 +38,15 @@ export const PlanItems = pgTable('planItems',{
 })
 
 
-export const UserStats = pgTable('userStats',{
+// export const UserStats = pgTable('userStats',{
+//     id:varchar('id').primaryKey(),
+//     income:varchar('income').notNull(),
+//     userid:varchar('userid').notNull(),
+//     month:varchar('month'),
+//     year:varchar('year')
+// })
+
+export const Income = pgTable('income',{
     id:varchar('id').primaryKey(),
     income:varchar('income').notNull(),
     userid:varchar('userid').notNull(),
@@ -74,5 +82,6 @@ export const Savings = pgTable('savings', {
 export const SavingsDeposits = pgTable('savingsDeposits',{
     id:varchar('id').primaryKey(),
     savingsId:varchar('savingsId').references(()=>Savings.id),
-    amount:varchar('amount')
+    amount:varchar('amount'),
+    createdBy:varchar('createdby')
 })

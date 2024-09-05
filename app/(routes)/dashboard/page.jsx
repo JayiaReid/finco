@@ -1,122 +1,167 @@
 'use client';
-import { UserButton, useUser } from '@clerk/nextjs';
-import { EyeIcon, Loader2Icon, MessageCircle } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import Card from './_components/Card';
-import { desc, eq, getTableColumns, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, sql } from 'drizzle-orm';
 import { db } from '../../../utils/dbConfig';
-import { Budgets, Expenses, UserStats } from '../../../utils/schema';
-import Chart from './_components/Chart'
-import Budget from './budgets/_components/Budget';
-import ExpensesList from './expenses/_components/ExpensesList';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
-import { Button } from '../../../components/ui/button';
-import Link from 'next/link';
-import { Dialog, DialogContent, DialogTrigger, DialogFooter, DialogClose, DialogHeader, DialogTitle, DialogDescription } from '../../../components/ui/dialog';
-import { Input } from '../../../components/ui/input';
-import { toast } from '../../../components/ui/use-toast'
-import Image from 'next/image';
-import DashCards from './_components/DashCards'
+import { Bills, Budgets, Expenses, Income, Savings, SavingsDeposits } from '../../../utils/schema';
+import DashCards from './_components/dash_comp/DashCards'
+import SetIncome from './_components/dash_comp/SetIncome'
+import RadialChart from './_components/charts/RadialChart'
+import PieChartDash from './_components/charts/PieChartDash'
 
 const Dashboard = () => {
   const thisyear = Number(new Date().getFullYear())
   const thismonth = Number(new Date().getMonth())
   const { user } = useUser();
+
+  const [totalOut, setOut] = useState(0)
   const router = useRouter();
-  const [budgetListInfo, setBudgetListInfo] = useState([]);
+  // const [budgetListInfo, setBudgetListInfo] = useState([]);
   const [expenses, setExpenses] = useState([])
   const [income, setIncome] = useState(0)
-  const [month, setMonth] = useState(new Date().getMonth())
-  const [year, setyear] = useState(new Date().getFullYear())
+  const [month, setMonth] = useState(thismonth)
+  const [year, setyear] = useState(thisyear)
   const [info, setInfo] = useState(null)
   const [past, setPast] = useState(false)
+  const [billTotal, setBillTotal] = useState(0)
+  const [saved, setSaved] = useState(0)
 
-  useEffect(() => {
-    if (user) {
-      getInfo()
+  const GetInfo = async () => {
+    try {
+      const result = await db.select().from(Income).where(and(eq(month, Income.month), eq(year, Income.year), eq(user.id, Income.userid)))
+      if (result.length > 0) {
+        // console.log(month, result)
+        setIncome(result[0].income)
+        setInfo(result[0])
+      } else {
+        console.log('none')
+        setIncome(0)
+        setInfo(null)
+      }
     }
-  }, [user, year, month]);
-
-  useEffect(() => {
-    calculatePastMonths();
-  }, [month, year]);
-
-  const calculatePastMonths = () => {
-    if (month < thismonth && year == thisyear) {
-      setPast(true)
-    }
-    else if (year < thisyear) {
-      setPast(true)
-    } else {
-      setPast(false)
+    catch (error) {
+      console.log(error)
     }
   }
 
-  const getInfo = async () => {
-    try {
-      const result = await db.select().from(UserStats)
-        .where(eq(UserStats.userid, user.id))
-        .where(eq(UserStats.month, month + 1))
-        .where(eq(UserStats.year, year))
+  useEffect(() => {
+    GetInfo()
+    getExpenses()
+    getSaved()
+  }, [year, month])
 
-      if (result.length > 0) {
-        console.log(result)
-        setInfo(result[0])
-        setIncome(result[0].income);
-      } else {
-        setIncome(0)
+  const convertTimestampToDate = (timestamp) => {
+    const date = new Date(Number(timestamp));
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    return { month, year };
+  };
+
+  const extractMonth = (date) => {
+    if (date) {
+      const arr = date.split("/")
+      return Number(arr[1]);
+    }
+    return null
+  }
+
+  const extractYear = (date) => {
+    if (date) {
+      const arr = date.split("/")
+      return Number(arr[2]);
+    }
+    return null
+  }
+
+  const getExpenses = async () => {
+    try {
+      const result = await db.select({
+        amount: Expenses.amount,
+        budget: Budgets.name,
+        date: Expenses.id,
+        retired: Budgets.retired
+      })
+        .from(Expenses)
+        .leftJoin(Budgets, eq(Budgets.id, Expenses.budgetId))
+        .where(eq(Expenses.createdBy, user.id))
+      // .orderBy(desc(Expenses.id))
+      if (result.length>0) {
+
+        const filtered = result.filter(expense => expense.retired !== true)
+        const timefilter = filtered.filter(expense => convertTimestampToDate(expense.date).month == month && convertTimestampToDate(expense.date).year == year)
+
+        const groupedExpenses = timefilter.reduce((acc, expense) => {
+          const budgetName = expense.budget;
+          if (!acc[budgetName]) {
+            acc[budgetName] = 0;
+          }
+          acc[budgetName] += Number(expense.amount);
+          return acc;
+        }, {});
+
+        const expensesArray = Object.keys(groupedExpenses).map(budgetName => ({
+          name: budgetName,
+          uv: groupedExpenses[budgetName],
+          fill: '#83a6ed'
+        }));
+
+        setExpenses(expensesArray);
+
+        let totalSpend = 0
+
+        const result2 = await db.select({
+          ...getTableColumns(Bills)
+        })
+          .from(Bills)
+          .where(eq(Bills.createdBy, user.id))
+          .groupBy(Bills.id);
+
+        if (result2.length>0) {
+          const filtered = result2.filter(element => extractMonth(element.date) === month + 1 && extractYear(element.date) === year && element.paid === true);
+
+          filtered.forEach(bill => {
+            totalSpend = totalSpend + Number(bill.charge);
+          });
+
+          setBillTotal(totalSpend)
+
+          timefilter.forEach(item => {
+            totalSpend = totalSpend + Number(item.amount)
+            // console.log(convertTimestampToDate(item.date).month)
+          })
+          setOut(totalSpend)
+        }
       }
+      // console.log(result)
     } catch (error) {
       console.log(error)
-      toast({
-        title: "Error",
-        description: "Failed to fetch user info",
-        variant: "destructive"
-      })
     }
   }
 
-  const setup = async (edit) => {
+  const getSaved = async () => {
     try {
-      if (edit) {
-        const result = await db.update(UserStats).set({
-          income
-        }).where(eq(UserStats.userid, user.id))
-          .where(eq(UserStats.month, month + 1))
-          .where(eq(UserStats.year, year))
-        if (result) {
-          console.log('edited')
-          toast({
-            title: "Profile updated"
-          })
-          console.log(result)
-        }
-      } else {
-        const result = await db.insert(UserStats).values({
-          id: Date.now(),
-          income: income,
-          userid: user.id,
-          month: month + 1,
-          year: year
+      const result = await db.select({
+        date: SavingsDeposits.id,
+        amount: SavingsDeposits.amount
+      }).from(SavingsDeposits).where(eq(SavingsDeposits.createdBy, user.id))
+
+      if (result) {
+        const timefilter = result.filter(deposit => convertTimestampToDate(deposit.date).month == month && convertTimestampToDate(deposit.date).year == year)
+        console.log(timefilter)
+
+        let totalSaved = 0
+
+        timefilter.forEach(deposit => {
+          totalSaved = totalSaved + Number(deposit.amount)
         })
-        if (result) {
-          toast({
-            title: "Profile updated"
-          })
-          console.log(result)
-        }
+
+        setSaved(totalSaved)
       }
-      getInfo()
+
     } catch (error) {
-      console.log('error', error)
-      toast({
-        title: "Error",
-        description: "Failed to update profile",
-        variant: "destructive"
-      })
-    } finally {
-      setIncome(0); // Reset income only after the operation completes
+
     }
   }
 
@@ -127,78 +172,17 @@ const Dashboard = () => {
           <h2 className=' font-bold text-3xl'>Hi {user?.firstName}!</h2>
           <p>Let's see what's happening with your money</p>
         </div>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant='outline'>Income</Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className='flex flex-col gap-3'>
-              {info ? <Dialog>
-                <DialogTrigger asChild>
-                  <Button onClick={() => setIncome(info.income)} className='w-full'>Edit Income</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                      <h2 className='text-xl font-bold'>Edit Income for month</h2>
-                    </DialogTitle>
-                    <DialogDescription>
-                      <div className='p-3 flex flex-col gap-2'>
-                        <h2>Income</h2>
-                        <Input type='number' value={income} onChange={(e) => setIncome(e.target.value)} placeholder="e.g. 5000" />
-                      </div>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter className="sm:justify-start">
-                    <DialogClose asChild>
-                      <Button className='my-5' onClick={() => setup(true)}>Submit</Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog> : <div className='flex flex-col gap-3'>
-                <h2>Finish Account Set Up</h2>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className='w-full'>Set Up Profile</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        <h2 className='text-xl font-bold'>Finish Profile Set Up</h2>
-                        <h2 className='text-sm font-light'>All information is encrypted so only you know these details</h2>
-                      </DialogTitle>
-                      <DialogDescription>
-                        <div className='p-3 flex flex-col gap-2'>
-                          <h2>Income</h2>
-                          <Input type='number' value={income} onChange={(e) => setIncome(Number(e.target.value))} placeholder="e.g. 5000" />
-                        </div>
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="sm:justify-start">
-                      <DialogClose asChild>
-                        <Button className='my-5' onClick={() => setup(false)}>Submit</Button>
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>}
-            </div>
-          </PopoverContent>
-        </Popover>
+        <SetIncome income={income} setIncome={setIncome} info={info} userid={user.id} month={month} year={year} getInfo={() => GetInfo()} />
       </div>
 
-      <DashCards setyear={setyear} setMonth={setMonth} income={info?.income} month={month} year={year} userid={user.id} thismonth={thismonth} thisyear={thisyear} />
-      <div className='text-3xl flex justify-center items-center'>
-        <Image src='/dashobard.png' alt='Dashboard Overview' width={700} height={700} />
+      <DashCards totalOut={totalOut} setyear={setyear} setMonth={setMonth} income={income} setIncome={setIncome} month={month} year={year} userid={user.id} thismonth={thismonth} thisyear={thisyear} saved={saved} />
 
-        {/* percentage of income to bills, expenses, savings */}
+      <div className='grid sm:grid-cols-1 md:grid-cols-2 grid-cols-2 gap-4'>
+        <PieChartDash income={income} expenses={totalOut} saved={saved} />
+        <RadialChart totalOut={Number(totalOut)} income={Number(income)} expenses={expenses} billTotal={Number(billTotal)} />
 
-        {/* expenses to each budget by month including bills */}
-
-        {/* percentage of out to in */}
-
-        {/* change income */}
       </div>
+
     </div>
   );
 };

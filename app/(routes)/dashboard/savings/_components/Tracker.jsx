@@ -24,10 +24,10 @@ const Tracker = ({ item }) => {
                 </div>
 
 
-                <h2 className='text-md'><span className='font-semibold'>Goal: </span>${item?.goal}</h2>
-                <h2 className='text-md'><span className='font-semibold'>Total Saved: </span>${item?.saved}</h2>
-                <h2 className='text-md'><span className='font-semibold'>Amount Left: </span>${item?.left}</h2>
-                <h2 className='text-md'><span className='font-semibold'>Number of Deposits: </span>{item?.totalDeposits>0? item?.totalDeposits : 0 }</h2>
+                <h2 className='text-md'><span className='font-semibold'>Goal: </span>${Number(item?.goal).toFixed(2)}</h2>
+                <h2 className='text-md'><span className='font-semibold'>Total Saved: </span>${Number(item?.saved).toFixed(2)}</h2>
+                <h2 className='text-md'><span className='font-semibold'>Amount Left: </span>${Number(item?.left ).toFixed(2)} </h2>
+                <h2 className='text-md'><span className='font-semibold'>Number of Deposits: </span>{item?.totalDeposits>0? Number(item?.totalDeposits).toFixed(2) : 0 }</h2>
             </div>
         </Link>
     )
