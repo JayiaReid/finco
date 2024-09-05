@@ -47,17 +47,45 @@ const DashboardLayout = ({ children }) => {
       </div>
     );
   }
-
   return (
     <div>
-      <div className={`fixed bg-primary z-10 w-${nav ? '64' : '30'} block`}>
-        {nav ? <SideNav showNav={showNav} /> : <SideNavDef showNav={showNav} />}
-      </div>
-      <div className={`ml-${nav ? '64' : '[100px]'} bg-background`}>
-        {children}
-      </div>
+        {nav ? (
+            <div>
+                <div className='fixed bg-primary z-10 w-64 block'>
+                    <SideNav showNav={showNav} />
+                </div>
+                {/* <Dash_Header showNav={showNav} /> */}
+                <div className='ml-64 bg-background'>
+                    {children}
+                </div>
+            </div>
+        ) : (
+            <div className='bg-background'>
+                <div className='fixed bg-primary z-10 w-30 block'>
+                    <SideNavDef showNav={showNav} />
+                </div>
+                    <div className='ml-[100px]'>
+                       {/* <Dash_Header showNav={showNav} />  */}
+                    </div>
+                    <div className='ml-[100px] bg-background'>
+                    {children}
+                </div>
+            </div>
+        )}
     </div>
-  );
+);
+
+
+  // return (
+  //   <div>
+  //     <div className={`fixed bg-primary z-10 w-${nav ? '64' : '30'} block`}>
+  //       {nav ? <SideNav showNav={showNav} /> : <SideNavDef showNav={showNav} />}
+  //     </div>
+  //     <div className={`ml-${nav ? '64' : '[100px]'} bg-background`}>
+  //       {children}
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default DashboardLayout;
